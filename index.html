@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindsetFlow - Professional Content Creator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app">
+        <!-- Setup Wizard -->
+        <div class="setup-wizard" id="setupWizard">
+            <div class="setup-wizard__overlay"></div>
+            <div class="setup-wizard__content">
+                <div class="setup-wizard__header">
+                    <h1>🧠 Welcome to MindsetFlow</h1>
+                    <p>Let's get you set up in just a few simple steps!</p>
+                </div>
+
+                <div class="setup-steps">
+                    <div class="setup-step setup-step--active" id="step1">
+                        <div class="setup-step__header">
+                            <div class="setup-step__number">1</div>
+                            <h3>Connect Your n8n Server</h3>
+                            <p>This is where your automation magic happens!</p>
+                        </div>
+                        <div class="setup-step__content">
+                            <div class="help-box">
+                                <div class="help-box__header">
+                                    <span class="help-icon">💡</span>
+                                    <h4>What is n8n?</h4>
+                                </div>
+                                <p>n8n is your automation server that creates videos with your voice and posts them to social media!</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">n8n Server URL</label>
+                                <input type="url" class="form-control" id="n8nServerUrl" placeholder="http://localhost:5678" value="http://localhost:5678">
+                                <small class="form-help">This is usually http://localhost:5678 if running locally</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Webhook URL</label>
+                                <input type="url" class="form-control" id="webhookUrl" placeholder="http://localhost:5678/webhook/mindset-content-creator">
+                                <small class="form-help">This will be generated automatically</small>
+                            </div>
+                            <div class="setup-actions">
+                                <button class="btn btn--primary" onclick="testN8nConnection()">Test Connection</button>
+                                <button class="btn btn--outline" onclick="nextSetupStep()">Next Step</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setup-step" id="step2">
+                        <div class="setup-step__header">
+                            <div class="setup-step__number">2</div>
+                            <h3>Configure Your Voice</h3>
+                            <p>Set up voice cloning to sound exactly like you!</p>
+                        </div>
+                        <div class="setup-step__content">
+                            <div class="help-box">
+                                <div class="help-box__header">
+                                    <span class="help-icon">🎤</span>
+                                    <h4>Voice Cloning Setup</h4>
+                                </div>
+                                <p>Upload a 30-second clear audio sample to FakeYou.com and get your voice model ID</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Voice Service</label>
+                                <select class="form-control" id="voiceService">
+                                    <option value="fakeyou">FakeYou.com (Free)</option>
+                                    <option value="elevenlabs">ElevenLabs (Paid)</option>
+                                    <option value="custom">Custom Service</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Voice Model ID</label>
+                                <input type="text" class="form-control" id="voiceModelId" placeholder="TM:abc123xyz">
+                                <small class="form-help">Get this from your voice cloning service</small>
+                            </div>
+                            <div class="setup-actions">
+                                <button class="btn btn--outline" onclick="prevSetupStep()">Previous</button>
+                                <button class="btn btn--primary" onclick="testVoiceModel()">Test Voice</button>
+                                <button class="btn btn--outline" onclick="nextSetupStep()">Next Step</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setup-step" id="step3">
+                        <div class="setup-step__header">
+                            <div class="setup-step__number">3</div>
+                            <h3>Connect Social Media</h3>
+                            <p>Add your social media accounts for auto-posting</p>
+                        </div>
+                        <div class="setup-step__content">
+                            <div class="social-platforms">
+                                <div class="platform-item">
+                                    <div class="platform-info">
+                                        <span class="platform-icon">📺</span>
+                                        <span class="platform-name">YouTube</span>
+                                    </div>
+                                    <button class="btn btn--small" onclick="connectPlatform('youtube')">Connect</button>
+                                </div>
+                                <div class="platform-item">
+                                    <div class="platform-info">
+                                        <span class="platform-icon">📸</span>
+                                        <span class="platform-name">Instagram</span>
+                                    </div>
+                                    <button class="btn btn--small" onclick="connectPlatform('instagram')">Connect</button>
+                                </div>
+                                <div class="platform-item">
+                                    <div class="platform-info">
+                                        <span class="platform-icon">🎵</span>
+                                        <span class="platform-name">TikTok</span>
+                                    </div>
+                                    <button class="btn btn--small" onclick="connectPlatform('tiktok')">Connect</button>
+                                </div>
+                                <div class="platform-item">
+                                    <div class="platform-info">
+                                        <span class="platform-icon">💼</span>
+                                        <span class="platform-name">LinkedIn</span>
+                                    </div>
+                                    <button class="btn btn--small" onclick="connectPlatform('linkedin')">Connect</button>
+                                </div>
+                                <div class="platform-item">
+                                    <div class="platform-info">
+                                        <span class="platform-icon">👥</span>
+                                        <span class="platform-name">Facebook</span>
+                                    </div>
+                                    <button class="btn btn--small" onclick="connectPlatform('facebook')">Connect</button>
+                                </div>
+                                <div class="platform-item">
+                                    <div class="platform-info">
+                                        <span class="platform-icon">🐦</span>
+                                        <span class="platform-name">Twitter</span>
+                                    </div>
+                                    <button class="btn btn--small" onclick="connectPlatform('twitter')">Connect</button>
+                                </div>
+                            </div>
+                            <div class="setup-actions">
+                                <button class="btn btn--outline" onclick="prevSetupStep()">Previous</button>
+                                <button class="btn btn--outline" onclick="nextSetupStep()">Skip for Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setup-step" id="step4">
+                        <div class="setup-step__header">
+                            <div class="setup-step__number">4</div>
+                            <h3>Test Everything</h3>
+                            <p>Let's make sure everything works perfectly!</p>
+                        </div>
+                        <div class="setup-step__content">
+                            <div class="test-results">
+                                <div class="test-item">
+                                    <span class="test-name">n8n Server Connection</span>
+                                    <span class="test-status" id="testN8nStatus">⏳ Testing...</span>
+                                </div>
+                                <div class="test-item">
+                                    <span class="test-name">Voice Model</span>
+                                    <span class="test-status" id="testVoiceStatus">⏳ Testing...</span>
+                                </div>
+                                <div class="test-item">
+                                    <span class="test-name">Social Media</span>
+                                    <span class="test-status" id="testSocialStatus">⏳ Testing...</span>
+                                </div>
+                            </div>
+                            <div class="setup-actions">
+                                <button class="btn btn--outline" onclick="prevSetupStep()">Previous</button>
+                                <button class="btn btn--primary" onclick="runAllTests()">Run Tests</button>
+                                <button class="btn btn--success" onclick="completeSetup()">Complete Setup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="main-app hidden" id="mainApp">
+            <!-- Header -->
+            <header class="header">
+                <div class="header__content">
+                    <div class="header__brand">
+                        <h1>🧠 MindsetFlow</h1>
+                        <span class="header__subtitle">Professional Content Creator</span>
+                    </div>
+                    <div class="header__actions">
+                        <button class="btn btn--primary" id="createContentBtn">
+                            <span>➕</span> Create New Content
+                        </button>
+                        <button class="btn btn--outline" onclick="showSettings()">⚙️ Settings</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="nav">
+                <button class="nav__item nav__item--active" data-section="dashboard">📊 Dashboard</button>
+                <button class="nav__item" data-section="create">✍️ Create</button>
+                <button class="nav__item" data-section="library">📚 Library</button>
+                <button class="nav__item" data-section="analytics">📈 Analytics</button>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="section section--active">
+                    <div class="dashboard">
+                        <div class="dashboard__header">
+                            <h2>Content Creation Overview</h2>
+                            <p class="dashboard__subtitle">Monitor your automated mindset content pipeline</p>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-card__icon">📝</div>
+                                <div class="stat-card__content">
+                                    <div class="stat-card__value" id="totalContent">47</div>
+                                    <div class="stat-card__label">Total Content</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__icon">📱</div>
+                                <div class="stat-card__content">
+                                    <div class="stat-card__value" id="totalPlatforms">6</div>
+                                    <div class="stat-card__label">Platforms</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__icon">👀</div>
+                                <div class="stat-card__content">
+                                    <div class="stat-card__value" id="totalViews">847K</div>
+                                    <div class="stat-card__label">Total Views</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__icon">💝</div>
+                                <div class="stat-card__content">
+                                    <div class="stat-card__value" id="engagementRate">12.7%</div>
+                                    <div class="stat-card__label">Engagement</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard__grid">
+                            <div class="dashboard__card">
+                                <h3>Recent Content</h3>
+                                <div class="content-list" id="recentContentList">
+                                    <!-- Dynamic content will be inserted here -->
+                                </div>
+                            </div>
+
+                            <div class="dashboard__card">
+                                <h3>Platform Performance</h3>
+                                <canvas id="platformChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Create Content Section -->
+                <section id="create" class="section">
+                    <div class="create-content">
+                        <div class="create-content__header">
+                            <h2>Create New Mindset Content</h2>
+                            <p>Generate professional content from Reddit posts or custom input</p>
+                        </div>
+
+                        <div class="create-form">
+                            <div class="form-group">
+                                <label class="form-label">Content Source</label>
+                                <div class="radio-group">
+                                    <label class="radio-item">
+                                        <input type="radio" name="contentSource" value="reddit" checked>
+                                        <span>Reddit Post</span>
+                                    </label>
+                                    <label class="radio-item">
+                                        <input type="radio" name="contentSource" value="custom">
+                                        <span>Custom Content</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="redditInputGroup">
+                                <label class="form-label">Reddit Post URL</label>
+                                <input type="url" class="form-control" id="redditUrl" placeholder="https://reddit.com/r/getmotivated/...">
+                                <button class="btn btn--outline" onclick="fetchRedditPost()">Fetch Post</button>
+                            </div>
+
+                            <div class="form-group hidden" id="customInputGroup">
+                                <label class="form-label">Custom Title</label>
+                                <input type="text" class="form-control" id="customTitle" placeholder="Your mindset content title">
+                                <label class="form-label">Custom Content</label>
+                                <textarea class="form-control" id="customContent" rows="4" placeholder="Your mindset content..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Target Platforms</label>
+                                <div class="platform-checkboxes">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="youtube" checked>
+                                        <span>📺 YouTube</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="instagram" checked>
+                                        <span>📸 Instagram</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="tiktok" checked>
+                                        <span>🎵 TikTok</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="linkedin" checked>
+                                        <span>💼 LinkedIn</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="facebook">
+                                        <span>👥 Facebook</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="twitter">
+                                        <span>🐦 Twitter</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="create-actions">
+                                <button class="btn btn--primary btn--large" onclick="createContent()">
+                                    <span>🚀</span> Create Content
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="creation-progress hidden" id="creationProgress">
+                            <h3>Creating Your Content...</h3>
+                            <div class="progress-steps">
+                                <div class="progress-step">
+                                    <div class="progress-step__icon">📝</div>
+                                    <div class="progress-step__label">Generating Script</div>
+                                    <div class="progress-step__status">⏳</div>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-step__icon">🎤</div>
+                                    <div class="progress-step__label">Cloning Voice</div>
+                                    <div class="progress-step__status">⏳</div>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-step__icon">🎬</div>
+                                    <div class="progress-step__label">Creating Video</div>
+                                    <div class="progress-step__status">⏳</div>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-step__icon">📱</div>
+                                    <div class="progress-step__label">Posting to Platforms</div>
+                                    <div class="progress-step__status">⏳</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Content Library Section -->
+                <section id="library" class="section">
+                    <div class="content-library">
+                        <div class="library-header">
+                            <h2>Content Library</h2>
+                            <div class="library-filters">
+                                <select class="form-control" id="filterPlatform">
+                                    <option value="">All Platforms</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                </select>
+                                <select class="form-control" id="filterStatus">
+                                    <option value="">All Status</option>
+                                    <option value="published">Published</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="content-grid" id="contentGrid">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics" class="section">
+                    <div class="analytics">
+                        <div class="analytics-header">
+                            <h2>Performance Analytics</h2>
+                            <div class="date-range">
+                                <select class="form-control">
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>Last 90 days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <h3>Views by Platform</h3>
+                                <canvas id="viewsChart"></canvas>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>Engagement Trends</h3>
+                                <canvas id="engagementChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
