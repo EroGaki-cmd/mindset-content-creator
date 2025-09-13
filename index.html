@@ -35,12 +35,12 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">n8n Server URL</label>
-                                <input type="url" class="form-control" id="n8nServerUrl" placeholder="http://localhost:5678" value="http://localhost:5678">
-                                <small class="form-help">This is usually http://localhost:5678 if running locally</small>
+                                <input type="url" class="form-control" id="n8nServerUrl" placeholder="https://n8n.pareshrai.com.np" value="https://n8n.pareshrai.com.np">
+                                <small class="form-help">Your n8n server URL (already filled with your URL)</small>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Webhook URL</label>
-                                <input type="url" class="form-control" id="webhookUrl" placeholder="http://localhost:5678/webhook/mindset-content-creator">
+                                <input type="url" class="form-control" id="webhookUrl" placeholder="https://n8n.pareshrai.com.np/webhook/mindset-content-creator">
                                 <small class="form-help">This will be generated automatically</small>
                             </div>
                             <div class="setup-actions">
@@ -63,6 +63,10 @@
                                     <h4>Voice Cloning Setup</h4>
                                 </div>
                                 <p>Upload a 30-second clear audio sample to FakeYou.com and get your voice model ID</p>
+                                <p><strong>Steps:</strong><br>
+                                1. Go to <a href="https://fakeyou.com" target="_blank">FakeYou.com</a><br>
+                                2. Create account → Upload voice sample<br>
+                                3. Copy your voice model ID (TM:xxxxx)</p>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Voice Service</label>
@@ -79,7 +83,7 @@
                             </div>
                             <div class="setup-actions">
                                 <button class="btn btn--outline" onclick="prevSetupStep()">Previous</button>
-                                <button class="btn btn--primary" onclick="testVoiceModel()">Test Voice</button>
+                                <button class="btn btn--primary" onclick="testVoiceModel()">Save Voice Settings</button>
                                 <button class="btn btn--outline" onclick="nextSetupStep()">Next Step</button>
                             </div>
                         </div>
@@ -92,6 +96,13 @@
                             <p>Add your social media accounts for auto-posting</p>
                         </div>
                         <div class="setup-step__content">
+                            <div class="help-box">
+                                <div class="help-box__header">
+                                    <span class="help-icon">📱</span>
+                                    <h4>Social Media Setup</h4>
+                                </div>
+                                <p>Click each platform to get setup instructions. You can skip this for now and add platforms later in Settings.</p>
+                            </div>
                             <div class="social-platforms">
                                 <div class="platform-item">
                                     <div class="platform-info">
@@ -164,10 +175,17 @@
                                     <span class="test-status" id="testSocialStatus">⏳ Testing...</span>
                                 </div>
                             </div>
+                            <div class="help-box">
+                                <div class="help-box__header">
+                                    <span class="help-icon">🎉</span>
+                                    <h4>Almost Ready!</h4>
+                                </div>
+                                <p>After completing setup, you can create content from trending posts or custom content. Your n8n server will handle voice cloning and video creation automatically!</p>
+                            </div>
                             <div class="setup-actions">
                                 <button class="btn btn--outline" onclick="prevSetupStep()">Previous</button>
                                 <button class="btn btn--primary" onclick="runAllTests()">Run Tests</button>
-                                <button class="btn btn--success" onclick="completeSetup()">Complete Setup</button>
+                                <button class="btn btn--success" onclick="completeSetup()">Complete Setup 🚀</button>
                             </div>
                         </div>
                     </div>
@@ -196,6 +214,7 @@
             <!-- Navigation -->
             <nav class="nav">
                 <button class="nav__item nav__item--active" data-section="dashboard">📊 Dashboard</button>
+                <button class="nav__item" data-section="trending">🔥 Trending Posts</button>
                 <button class="nav__item" data-section="create">✍️ Create</button>
                 <button class="nav__item" data-section="library">📚 Library</button>
                 <button class="nav__item" data-section="analytics">📈 Analytics</button>
@@ -258,6 +277,35 @@
                     </div>
                 </section>
 
+                <!-- Trending Posts Section -->
+                <section id="trending" class="section">
+                    <div class="trending-posts">
+                        <div class="trending-header">
+                            <h2>🔥 Today's Trending Mindset Posts</h2>
+                            <p class="trending-subtitle">High-engagement posts perfect for creating viral content</p>
+                        </div>
+
+                        <div class="trending-stats">
+                            <div class="trending-stat">
+                                <span class="trending-stat__value">25</span>
+                                <span class="trending-stat__label">Trending Today</span>
+                            </div>
+                            <div class="trending-stat">
+                                <span class="trending-stat__value">1.2M</span>
+                                <span class="trending-stat__label">Total Upvotes</span>
+                            </div>
+                            <div class="trending-stat">
+                                <span class="trending-stat__value">89%</span>
+                                <span class="trending-stat__label">Mindset Focus</span>
+                            </div>
+                        </div>
+
+                        <div class="trending-container" id="trendingPostsContainer">
+                            <!-- Dynamic trending posts will be inserted here -->
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Create Content Section -->
                 <section id="create" class="section">
                     <div class="create-content">
@@ -284,7 +332,8 @@
                             <div class="form-group" id="redditInputGroup">
                                 <label class="form-label">Reddit Post URL</label>
                                 <input type="url" class="form-control" id="redditUrl" placeholder="https://reddit.com/r/getmotivated/...">
-                                <button class="btn btn--outline" onclick="fetchRedditPost()">Fetch Post</button>
+                                <button class="btn btn--outline" onclick="fetchRedditPost()">Fetch Post Data</button>
+                                <small class="form-help">Or select from trending posts above ↑</small>
                             </div>
 
                             <div class="form-group hidden" id="customInputGroup">
@@ -332,21 +381,21 @@
                         </div>
 
                         <div class="creation-progress hidden" id="creationProgress">
-                            <h3>Creating Your Content...</h3>
+                            <h3>Creating Your Professional Content...</h3>
                             <div class="progress-steps">
                                 <div class="progress-step">
                                     <div class="progress-step__icon">📝</div>
-                                    <div class="progress-step__label">Generating Script</div>
+                                    <div class="progress-step__label">Generating Script with Perplexity Pro</div>
                                     <div class="progress-step__status">⏳</div>
                                 </div>
                                 <div class="progress-step">
                                     <div class="progress-step__icon">🎤</div>
-                                    <div class="progress-step__label">Cloning Voice</div>
+                                    <div class="progress-step__label">Cloning Your Voice</div>
                                     <div class="progress-step__status">⏳</div>
                                 </div>
                                 <div class="progress-step">
                                     <div class="progress-step__icon">🎬</div>
-                                    <div class="progress-step__label">Creating Video</div>
+                                    <div class="progress-step__label">Creating Professional Video</div>
                                     <div class="progress-step__status">⏳</div>
                                 </div>
                                 <div class="progress-step">
