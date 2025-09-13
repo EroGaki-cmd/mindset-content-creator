@@ -1,6 +1,5 @@
 console.log("MindsetFlow - No Password Version");
 
-// Initialize when DOM loads
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOM loaded - starting app");
     initializeApp();
@@ -9,33 +8,26 @@ document.addEventListener("DOMContentLoaded", function() {
 function initializeApp() {
     console.log("Initializing app");
 
-    // Show main app
     var mainApp = document.getElementById("mainApp");
     if (mainApp) {
         mainApp.classList.remove("hidden");
         console.log("Main app shown");
     }
 
-    // Hide setup wizard
     var setupWizard = document.getElementById("setupWizard");
     if (setupWizard) {
         setupWizard.classList.add("hidden");
         console.log("Setup wizard hidden");
     }
 
-    // Setup navigation
     setupNavigation();
-
-    // Load dashboard
     loadDashboard();
-
     console.log("App initialized successfully");
 }
 
 function setupNavigation() {
     console.log("Setting up navigation");
 
-    // Navigation items
     var navItems = document.querySelectorAll(".nav__item");
     for (var i = 0; i < navItems.length; i++) {
         navItems[i].addEventListener("click", function() {
@@ -46,7 +38,6 @@ function setupNavigation() {
         });
     }
 
-    // Create content button
     var createBtn = document.getElementById("createContentBtn");
     if (createBtn) {
         createBtn.addEventListener("click", function() {
@@ -60,7 +51,6 @@ function setupNavigation() {
 function showSection(sectionName) {
     console.log("Showing section: " + sectionName);
 
-    // Update navigation
     var navItems = document.querySelectorAll(".nav__item");
     for (var i = 0; i < navItems.length; i++) {
         navItems[i].classList.remove("nav__item--active");
@@ -71,7 +61,6 @@ function showSection(sectionName) {
         activeNav.classList.add("nav__item--active");
     }
 
-    // Update sections
     var sections = document.querySelectorAll(".section");
     for (var i = 0; i < sections.length; i++) {
         sections[i].classList.remove("section--active");
@@ -82,7 +71,6 @@ function showSection(sectionName) {
         activeSection.classList.add("section--active");
     }
 
-    // Load section content
     if (sectionName === "dashboard") {
         loadDashboard();
     } else if (sectionName === "trending") {
@@ -99,7 +87,6 @@ function showSection(sectionName) {
 function loadDashboard() {
     console.log("Loading dashboard");
 
-    // Update stats
     var totalContent = document.getElementById("totalContent");
     var totalPlatforms = document.getElementById("totalPlatforms");
     var totalViews = document.getElementById("totalViews");
@@ -110,7 +97,6 @@ function loadDashboard() {
     if (totalViews) totalViews.textContent = "0";
     if (engagementRate) engagementRate.textContent = "0%";
 
-    // Show empty content message
     var contentList = document.getElementById("recentContentList");
     if (contentList) {
         var emptyDiv = document.createElement("div");
@@ -158,7 +144,6 @@ function loadTrending() {
 
 function loadCreate() {
     console.log("Loading create section");
-    // Create section content already exists in HTML
 }
 
 function loadLibrary() {
@@ -188,7 +173,6 @@ function loadLibrary() {
 
 function loadAnalytics() {
     console.log("Loading analytics section");
-    // Analytics section content already exists in HTML
 }
 
 function showSettings() {
