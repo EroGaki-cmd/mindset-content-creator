@@ -1,103 +1,277 @@
-// MINDSETFLOW - ULTRA CLEAN VERSION (ZERO SYNTAX ERRORS)
+console.log("Starting MindsetFlow...");
 
-console.log("MindsetFlow Starting...");
+var REQUIRED_PASSWORD = "Lm@nny6221";
+var isAuthenticated = false;
 
-// Password protection
-const REQUIRED_PASSWORD = "Lm@nny6221";
-let isAuthenticated = localStorage.getItem("mindsetflow_authenticated") === "true";
+// Check if user is already authenticated
+if (localStorage.getItem("mindsetflow_authenticated") === "true") {
+    isAuthenticated = true;
+}
 
-// Initialize when DOM is ready
+// Wait for DOM to load
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM loaded");
+    console.log("DOM ready");
 
-    if (!isAuthenticated) {
-        console.log("Showing password prompt");
-        showPasswordPrompt();
-    } else {
+    if (isAuthenticated) {
         console.log("User authenticated");
-        initializeApp();
+        showMainApp();
+    } else {
+        console.log("Showing password");
+        showPassword();
     }
 });
 
-function showPasswordPrompt() {
-    console.log("Creating password modal");
+function showPassword() {
+    console.log("Creating password screen");
 
-    const passwordModal = document.createElement("div");
-    passwordModal.className = "password-modal";
+    // Create elements step by step
+    var overlay = document.createElement("div");
+    overlay.className = "password-modal";
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999;";
 
-    const modalHTML = "" +
-        "<div class='password-modal__overlay'></div>" +
-        "<div class='password-modal__content'>" +
-            "<div class='password-modal__header'>" +
-                "<h1>🔒 MindsetFlow Access</h1>" +
-                "<p>Enter password to access the application</p>" +
-            "</div>" +
-            "<div class='password-form'>" +
-                "<div class='form-group'>" +
-                    "<label class='form-label'>Password</label>" +
-                    "<input type='password' class='form-control' id='passwordInput' placeholder='Enter your password'>" +
-                    "<small class='form-help'>Enter your secure password</small>" +
-                "</div>" +
-                "<div class='password-actions'>" +
-                    "<button class='btn btn--primary' onclick='checkPassword()'>🔓 Unlock Application</button>" +
-                "</div>" +
-                "<div class='password-error hidden' id='passwordError'>" +
-                    "❌ Incorrect password. Please try again." +
-                "</div>" +
-            "</div>" +
-        "</div>";
+    var content = document.createElement("div");
+    content.style.cssText = "background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%;";
 
-    passwordModal.innerHTML = modalHTML;
-    document.body.appendChild(passwordModal);
-    passwordModal.style.display = "flex";
+    var title = document.createElement("h1");
+    title.textContent = "🔒 MindsetFlow Access";
+    title.style.cssText = "margin-bottom: 10px; color: #333;";
 
-    console.log("Password modal displayed");
+    var subtitle = document.createElement("p");
+    subtitle.textContent = "Enter password to access the application";
+    subtitle.style.cssText = "margin-bottom: 30px; color: #666;";
 
-    setTimeout(function() {
-        const input = document.getElementById("passwordInput");
-        if (input) {
-            input.focus();
-            input.addEventListener("keypress", function(e) {
-                if (e.key === "Enter") {
-                    checkPassword();
-                }
-            });
+    var input = document.createElement("input");
+    input.type = "password";
+    input.id = "passwordInput";
+    input.placeholder = "Enter your password";
+    input.style.cssText = "width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;";
+
+    var button = document.createElement("button");
+    button.textContent = "🔓 Unlock Application";
+    button.style.cssText = "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 16px; cursor: pointer;";
+    button.onclick = checkPassword;
+
+    var error = document.createElement("div");
+    error.id = "passwordError";
+    error.style.cssText = "margin-top: 15px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 8px; display: none;";
+    error.textContent = "❌ Incorrect password. Please try again.";
+
+    // Build the modal
+    content.appendChild(title);
+    content.appendChild(subtitle);
+    content.appendChild(input);
+    content.appendChild(button);
+    content.appendChild(error);
+    overlay.appendChild(content);
+    document.body.appendChild(overlay);
+
+    // Focus input and add Enter key listener
+    input.focus();
+    input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            checkPassword();
         }
-    }, 100);
+    });
+
+    console.log("Password screen ready");
 }
 
 function checkPassword() {
     console.log("Checking password");
 
-    const enteredPassword = document.getElementById("passwordInput").value;
-    const errorElement = document.getElementById("passwordError");
+    var input = document.getElementById("passwordInput");
+    var error = document.getElementById("passwordError");
+    var password = input.value;
 
-    if (enteredPassword === REQUIRED_PASSWORD) {
+    if (password === REQUIRED_PASSWORD) {
         console.log("Password correct!");
 
+        // Set authentication
         localStorage.setItem("mindsetflow_authenticated", "true");
         isAuthenticated = true;
 
-        const modal = document.querySelector(".password-modal");
+        // Remove password modal
+        var modal = document.querySelector(".password-modal");
         if (modal) {
             modal.remove();
         }
 
-        initializeApp();
-        showNotification("Welcome to MindsetFlow! Access granted.", "success");
+        // Show main app
+        showMainApp();
+        showMessage("Welcome to MindsetFlow! Access granted.", "success");
 
     } else {
-        console.log("Password incorrect");
+        console.log("Wrong password");
 
-        if (errorElement) {
-            errorElement.classList.remove("hidden");
-        }
+        // Show error
+        error.style.display = "block";
+        input.value = "";
+        input.focus();
+    }
+}
 
-        const input = document.getElementById("passwordInput");
-        if (input) {
-            input.value = "";
-            input.focus();
-        }
+function showMainApp() {
+    console.log("Showing main app");
+
+    // Show main app container
+    var mainApp = document.getElementById("mainApp");
+    if (mainApp) {
+        mainApp.classList.remove("hidden");
+    }
+
+    // Hide setup wizard
+    var setupWizard = document.getElementById("setupWizard");
+    if (setupWizard) {
+        setupWizard.classList.add("hidden");
+    }
+
+    // Set up navigation
+    setupNavigation();
+
+    // Load dashboard
+    loadDashboard();
+
+    showMessage("MindsetFlow ready!", "success");
+}
+
+function setupNavigation() {
+    console.log("Setting up navigation");
+
+    // Get all nav items
+    var navItems = document.querySelectorAll(".nav__item");
+
+    for (var i = 0; i < navItems.length; i++) {
+        navItems[i].addEventListener("click", function() {
+            var section = this.getAttribute("data-section");
+            if (section) {
+                showSection(section);
+            }
+        });
+    }
+
+    // Create button handler
+    var createBtn = document.getElementById("createContentBtn");
+    if (createBtn) {
+        createBtn.addEventListener("click", function() {
+            showSection("create");
+        });
+    }
+}
+
+function showSection(sectionName) {
+    console.log("Showing section: " + sectionName);
+
+    // Update navigation
+    var navItems = document.querySelectorAll(".nav__item");
+    for (var i = 0; i < navItems.length; i++) {
+        navItems[i].classList.remove("nav__item--active");
+    }
+
+    var activeNav = document.querySelector("[data-section='" + sectionName + "']");
+    if (activeNav) {
+        activeNav.classList.add("nav__item--active");
+    }
+
+    // Update sections
+    var sections = document.querySelectorAll(".section");
+    for (var i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("section--active");
+    }
+
+    var activeSection = document.getElementById(sectionName);
+    if (activeSection) {
+        activeSection.classList.add("section--active");
+    }
+
+    // Load specific content
+    if (sectionName === "dashboard") {
+        loadDashboard();
+    } else if (sectionName === "trending") {
+        loadTrending();
+    }
+
+    showMessage("Switched to " + sectionName, "info");
+}
+
+function loadDashboard() {
+    console.log("Loading dashboard");
+
+    // Update stats
+    var totalContent = document.getElementById("totalContent");
+    var totalPlatforms = document.getElementById("totalPlatforms");
+    var totalViews = document.getElementById("totalViews");
+    var engagementRate = document.getElementById("engagementRate");
+
+    if (totalContent) totalContent.textContent = "0";
+    if (totalPlatforms) totalPlatforms.textContent = "0";
+    if (totalViews) totalViews.textContent = "0";
+    if (engagementRate) engagementRate.textContent = "0%";
+
+    // Show empty content message
+    var contentList = document.getElementById("recentContentList");
+    if (contentList) {
+        contentList.innerHTML = "<div style='text-align: center; padding: 20px; color: #666;'><p>No content created yet.</p><p>Create your first piece of content!</p><button class='btn btn--primary' onclick='showSection("create")'>Create Content</button></div>";
+    }
+}
+
+function loadTrending() {
+    console.log("Loading trending posts");
+
+    var container = document.getElementById("trendingPostsContainer");
+    if (container) {
+        container.innerHTML = "<div style='text-align: center; padding: 40px; color: #666;'><h3>Trending Posts</h3><p>This feature will load trending Reddit posts.</p><p>Coming soon!</p></div>";
+    }
+}
+
+function showSettings() {
+    console.log("Showing settings");
+
+    // Create settings modal
+    var overlay = document.createElement("div");
+    overlay.className = "settings-modal";
+    overlay.id = "settingsModal";
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999;";
+
+    var content = document.createElement("div");
+    content.style.cssText = "background: white; padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;";
+
+    var header = document.createElement("div");
+    header.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;";
+
+    var title = document.createElement("h2");
+    title.textContent = "⚙️ Settings";
+    title.style.margin = "0";
+
+    var closeBtn = document.createElement("button");
+    closeBtn.textContent = "✕ Close";
+    closeBtn.style.cssText = "background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;";
+    closeBtn.onclick = closeSettings;
+
+    var logoutBtn = document.createElement("button");
+    logoutBtn.textContent = "🔓 Logout";
+    logoutBtn.style.cssText = "background: #ffc107; color: #333; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;";
+    logoutBtn.onclick = logout;
+
+    var buttonContainer = document.createElement("div");
+    buttonContainer.appendChild(logoutBtn);
+    buttonContainer.appendChild(closeBtn);
+
+    header.appendChild(title);
+    header.appendChild(buttonContainer);
+
+    var body = document.createElement("div");
+    body.innerHTML = "<div style='margin-bottom: 20px;'><h3>🤖 n8n Server</h3><p>Server: https://n8n.pareshrai.com.np</p><p>Webhook: https://n8n.pareshrai.com.np/webhook/mindset-content-creator</p></div><div style='margin-bottom: 20px;'><h3>🎤 Voice Cloning</h3><p>Service: FakeYou.com</p><p>Status: Ready for setup</p></div><div><h3>📱 Social Media</h3><p>All platforms ready for connection</p></div>";
+
+    content.appendChild(header);
+    content.appendChild(body);
+    overlay.appendChild(content);
+    document.body.appendChild(overlay);
+}
+
+function closeSettings() {
+    var modal = document.getElementById("settingsModal");
+    if (modal) {
+        modal.remove();
     }
 }
 
@@ -108,233 +282,39 @@ function logout() {
     }
 }
 
-function initializeApp() {
-    console.log("Initializing app");
+function showMessage(text, type) {
+    console.log("Message: " + text);
 
-    // Show main app
-    const mainApp = document.getElementById("mainApp");
-    if (mainApp) {
-        mainApp.classList.remove("hidden");
-    }
+    var message = document.createElement("div");
+    message.textContent = text;
 
-    // Hide setup wizard
-    const setupWizard = document.getElementById("setupWizard");
-    if (setupWizard) {
-        setupWizard.classList.add("hidden");
-    }
-
-    // Initialize basic functionality
-    initializeEventListeners();
-    loadDashboard();
-
-    showNotification("MindsetFlow initialized successfully!", "success");
-}
-
-function initializeEventListeners() {
-    console.log("Setting up event listeners");
-
-    // Navigation
-    const navItems = document.querySelectorAll(".nav__item");
-    navItems.forEach(function(item) {
-        item.addEventListener("click", function() {
-            const section = this.dataset.section;
-            if (section) {
-                showSection(section);
-            }
-        });
-    });
-
-    // Create content button
-    const createBtn = document.getElementById("createContentBtn");
-    if (createBtn) {
-        createBtn.addEventListener("click", function() {
-            showSection("create");
-        });
-    }
-}
-
-function showSection(sectionId) {
-    console.log("Showing section: " + sectionId);
-
-    // Update navigation
-    const navItems = document.querySelectorAll(".nav__item");
-    navItems.forEach(function(item) {
-        item.classList.remove("nav__item--active");
-    });
-
-    const activeNav = document.querySelector("[data-section='" + sectionId + "']");
-    if (activeNav) {
-        activeNav.classList.add("nav__item--active");
-    }
-
-    // Update sections
-    const sections = document.querySelectorAll(".section");
-    sections.forEach(function(section) {
-        section.classList.remove("section--active");
-    });
-
-    const activeSection = document.getElementById(sectionId);
-    if (activeSection) {
-        activeSection.classList.add("section--active");
-    }
-
-    // Load section-specific content
-    if (sectionId === "trending") {
-        loadTrendingPosts();
-    } else if (sectionId === "dashboard") {
-        loadDashboard();
-    }
-
-    showNotification("Switched to " + sectionId + " section", "info");
-}
-
-function loadDashboard() {
-    console.log("Loading dashboard");
-
-    // Update stats with real data
-    const contentCount = localStorage.getItem("mindsetflow_content_count") || "0";
-    const platformCount = "0";
-    const viewCount = "0";
-    const engagementRate = "0%";
-
-    const totalContentEl = document.getElementById("totalContent");
-    const totalPlatformsEl = document.getElementById("totalPlatforms");
-    const totalViewsEl = document.getElementById("totalViews");
-    const engagementRateEl = document.getElementById("engagementRate");
-
-    if (totalContentEl) totalContentEl.textContent = contentCount;
-    if (totalPlatformsEl) totalPlatformsEl.textContent = platformCount;
-    if (totalViewsEl) totalViewsEl.textContent = viewCount;
-    if (engagementRateEl) engagementRateEl.textContent = engagementRate;
-
-    // Show no content message
-    const contentList = document.getElementById("recentContentList");
-    if (contentList) {
-        contentList.innerHTML = "" +
-            "<div style='text-align: center; padding: 20px; color: #666;'>" +
-                "<p>No content created yet.</p>" +
-                "<p>Create your first piece of content to see it here!</p>" +
-                "<button class='btn btn--primary' onclick='showSection("trending")'>🔥 Browse Trending Posts</button>" +
-            "</div>";
-    }
-}
-
-function loadTrendingPosts() {
-    console.log("Loading trending posts");
-
-    const container = document.getElementById("trendingPostsContainer");
-    if (!container) return;
-
-    // Show loading message
-    container.innerHTML = "" +
-        "<div style='text-align: center; padding: 40px; color: #666;'>" +
-            "<h3>Loading trending posts...</h3>" +
-            "<p>Fetching today's best mindset content from Reddit</p>" +
-        "</div>";
-
-    // Simulate loading
-    setTimeout(function() {
-        container.innerHTML = "" +
-            "<div style='text-align: center; padding: 40px; color: #666;'>" +
-                "<h3>Trending posts feature coming soon!</h3>" +
-                "<p>Use the Create section to make custom content for now.</p>" +
-                "<button class='btn btn--primary' onclick='showSection("create")'>✍️ Create Custom Content</button>" +
-            "</div>";
-    }, 2000);
-}
-
-function showSettings() {
-    console.log("Opening settings");
-
-    const modal = document.createElement("div");
-    modal.className = "settings-modal";
-    modal.id = "settingsModal";
-
-    const modalHTML = "" +
-        "<div class='settings-modal__overlay' onclick='closeSettings()'></div>" +
-        "<div class='settings-modal__content'>" +
-            "<div class='settings-modal__header'>" +
-                "<h2>⚙️ Settings</h2>" +
-                "<div>" +
-                    "<button class='btn btn--small btn--outline' onclick='logout()'>🔓 Logout</button>" +
-                    "<button class='btn btn--outline' onclick='closeSettings()'>✕ Close</button>" +
-                "</div>" +
-            "</div>" +
-            "<div class='settings-modal__body'>" +
-                "<div class='settings-section'>" +
-                    "<h3>🤖 n8n Server</h3>" +
-                    "<p>Server URL: https://n8n.pareshrai.com.np</p>" +
-                    "<p>Webhook: https://n8n.pareshrai.com.np/webhook/mindset-content-creator</p>" +
-                "</div>" +
-                "<div class='settings-section'>" +
-                    "<h3>🎤 Voice Cloning</h3>" +
-                    "<p>Service: FakeYou.com</p>" +
-                    "<p>Status: Ready for configuration</p>" +
-                "</div>" +
-                "<div class='settings-section'>" +
-                    "<h3>📱 Social Media</h3>" +
-                    "<p>All platforms ready for connection</p>" +
-                "</div>" +
-            "</div>" +
-            "<div class='settings-modal__footer'>" +
-                "<button class='btn btn--primary' onclick='closeSettings()'>💾 Close Settings</button>" +
-            "</div>" +
-        "</div>";
-
-    modal.innerHTML = modalHTML;
-    document.body.appendChild(modal);
-    modal.style.display = "flex";
-}
-
-function closeSettings() {
-    const modal = document.getElementById("settingsModal");
-    if (modal) {
-        modal.remove();
-    }
-}
-
-function showNotification(message, type) {
-    console.log("Notification: " + message);
-
-    const notification = document.createElement("div");
-    notification.textContent = message;
-
-    const colors = {
-        info: "#667eea",
-        success: "#28a745",
-        error: "#dc3545",
-        warning: "#ffc107"
+    var colors = {
+        "info": "#667eea",
+        "success": "#28a745",
+        "error": "#dc3545",
+        "warning": "#ffc107"
     };
 
-    notification.style.cssText = "" +
-        "position: fixed;" +
-        "top: 20px;" +
-        "right: 20px;" +
-        "padding: 15px 20px;" +
-        "border-radius: 8px;" +
-        "color: white;" +
-        "font-weight: 600;" +
-        "z-index: 10001;" +
-        "max-width: 400px;" +
-        "transform: translateX(100%);" +
-        "transition: transform 0.3s ease;" +
-        "box-shadow: 0 4px 12px rgba(0,0,0,0.15);" +
-        "background-color: " + (colors[type] || colors.info) + ";";
+    var color = colors[type] || colors.info;
 
-    document.body.appendChild(notification);
+    message.style.cssText = "position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: " + color + "; color: white; border-radius: 8px; font-weight: 600; z-index: 10000; max-width: 400px; transform: translateX(100%); transition: transform 0.3s ease;";
 
+    document.body.appendChild(message);
+
+    // Animate in
     setTimeout(function() {
-        notification.style.transform = "translateX(0)";
+        message.style.transform = "translateX(0)";
     }, 100);
 
+    // Remove after 3 seconds
     setTimeout(function() {
-        notification.style.transform = "translateX(100%)";
+        message.style.transform = "translateX(100%)";
         setTimeout(function() {
-            if (notification.parentNode) {
-                document.body.removeChild(notification);
+            if (message.parentNode) {
+                document.body.removeChild(message);
             }
         }, 300);
     }, 3000);
 }
 
-console.log("MindsetFlow script loaded successfully!");
+console.log("MindsetFlow loaded!");
