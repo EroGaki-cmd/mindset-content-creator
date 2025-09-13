@@ -145,6 +145,11 @@ body {
     margin-bottom: 8px;
 }
 
+.help-box ul {
+    color: #666;
+    line-height: 1.5;
+}
+
 .help-box a {
     color: #667eea;
     text-decoration: none;
@@ -558,6 +563,19 @@ body {
 .trending-post__meta {
     font-size: 0.9em;
     color: #666;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.engagement-badge {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
 }
 
 .trending-post__content {
@@ -882,7 +900,7 @@ body {
     background: white;
     border-radius: 20px;
     padding: 0;
-    max-width: 700px;
+    max-width: 800px;
     width: 90%;
     max-height: 85vh;
     overflow: hidden;
@@ -928,7 +946,7 @@ body {
 
 .social-status {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     gap: 15px;
 }
 
@@ -971,6 +989,42 @@ body {
     display: flex;
     gap: 15px;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Empty State Styles */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin-bottom: 20px;
+}
+
+/* Loading States */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Responsive Design */
@@ -1033,6 +1087,11 @@ body {
     .trending-post__actions {
         flex-direction: column;
     }
+
+    .trending-post__meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1050,6 +1109,10 @@ body {
 
     .social-status {
         grid-template-columns: 1fr;
+    }
+
+    .settings-modal__footer {
+        padding: 15px 20px;
     }
 }
 
