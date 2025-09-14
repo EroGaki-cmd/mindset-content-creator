@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindsetFlow - Working Version</title>
+    <title>MindsetFlow - Bulletproof Version</title>
     <style>
         body { 
             font-family: Arial, sans-serif;
@@ -41,7 +41,7 @@
         .dashboard__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .dashboard__card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         .dashboard__card h3 { color: #333; margin-bottom: 20px; font-size: 1.3em; }
-        .notification { position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: #28a745; color: white; border-radius: 8px; font-weight: 600; z-index: 10001; max-width: 400px; transform: translateX(100%); transition: transform 0.3s ease; }
+        .notification { position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: #28a745; color: white; border-radius: 8px; font-weight: 600; z-index: 10001; max-width: 400px; }
         .settings-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999; }
         .settings-content { background: white; padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; }
         @media (max-width: 768px) { .dashboard__grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -57,18 +57,18 @@
                         <span class="header__subtitle">Professional Content Creator</span>
                     </div>
                     <div class="header__actions">
-                        <button class="btn btn--primary" id="createContentBtn">➕ Create New Content</button>
-                        <button class="btn btn--outline" id="settingsBtn">⚙️ Settings</button>
+                        <button class="btn btn--primary" id="createContentBtn">Create New Content</button>
+                        <button class="btn btn--outline" id="settingsBtn">Settings</button>
                     </div>
                 </div>
             </header>
 
             <nav class="nav">
-                <button class="nav__item nav__item--active" data-section="dashboard">📊 Dashboard</button>
-                <button class="nav__item" data-section="trending">🔥 Trending Posts</button>
-                <button class="nav__item" data-section="create">✍️ Create</button>
-                <button class="nav__item" data-section="library">📚 Library</button>
-                <button class="nav__item" data-section="analytics">📈 Analytics</button>
+                <button class="nav__item nav__item--active" id="navDashboard">Dashboard</button>
+                <button class="nav__item" id="navTrending">Trending Posts</button>
+                <button class="nav__item" id="navCreate">Create</button>
+                <button class="nav__item" id="navLibrary">Library</button>
+                <button class="nav__item" id="navAnalytics">Analytics</button>
             </nav>
 
             <main class="main">
@@ -109,7 +109,7 @@
                                     <div style="text-align: center; padding: 20px; color: #666;">
                                         <p>No content created yet.</p>
                                         <p>Welcome to MindsetFlow!</p>
-                                        <button class="btn btn--primary" onclick="showSection('create')" style="margin-top: 15px;">✍️ Create Your First Content</button>
+                                        <button class="btn btn--primary" id="dashboardCreateBtn">Create Your First Content</button>
                                     </div>
                                 </div>
                             </div>
@@ -117,9 +117,9 @@
                             <div class="dashboard__card">
                                 <h3>Platform Performance</h3>
                                 <div style="text-align: center; padding: 20px; color: #666;">
-                                    <p>📊 Analytics will appear here</p>
+                                    <p>Analytics will appear here</p>
                                     <p>Connect platforms to see performance data</p>
-                                    <button class="btn btn--outline" onclick="showSection('analytics')" style="margin-top: 15px;">📈 View Analytics</button>
+                                    <button class="btn btn--outline" id="dashboardAnalyticsBtn">View Analytics</button>
                                 </div>
                             </div>
                         </div>
@@ -128,19 +128,13 @@
 
                 <section id="trending" class="section">
                     <div style="text-align: center; padding: 40px; color: #333;">
-                        <h2>🔥 Trending Posts</h2>
+                        <h2>Trending Posts</h2>
                         <p style="color: #666; margin-bottom: 40px;">High-engagement posts perfect for creating viral content</p>
                         <div id="trendingPostsContainer">
                             <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-                                <h3>📈 Reddit Trending Posts</h3>
-                                <p>This feature will automatically fetch trending posts from:</p>
-                                <ul style="text-align: left; max-width: 400px; margin: 20px auto;">
-                                    <li>r/getmotivated</li>
-                                    <li>r/selfimprovement</li>
-                                    <li>r/decidingtobebetter</li>
-                                    <li>r/motivation</li>
-                                </ul>
-                                <button class="btn btn--primary" onclick="loadTrendingPosts()" style="margin-top: 20px;">🔄 Load Trending Posts</button>
+                                <h3>Reddit Trending Posts</h3>
+                                <p>This feature will automatically fetch trending posts from Reddit</p>
+                                <button class="btn btn--primary" id="loadTrendingBtn">Load Trending Posts</button>
                             </div>
                         </div>
                     </div>
@@ -148,72 +142,26 @@
 
                 <section id="create" class="section">
                     <div style="text-align: center; padding: 40px; color: #333;">
-                        <h2>✍️ Create New Content</h2>
+                        <h2>Create New Content</h2>
                         <p style="color: #666; margin-bottom: 40px;">Generate professional content from Reddit posts or custom input</p>
                         <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
-                            <div style="margin-bottom: 30px;">
-                                <h3 style="color: #333; margin-bottom: 20px;">Content Source</h3>
-                                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 15px 25px; background: #f8f9ff; border: 2px solid #667eea; border-radius: 10px; cursor: pointer;">
-                                        <input type="radio" name="contentSource" value="reddit" checked>
-                                        <span style="color: #667eea; font-weight: 600;">📝 Reddit Post</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 15px 25px; background: #f8f9ff; border: 2px solid #e1e5f7; border-radius: 10px; cursor: pointer;">
-                                        <input type="radio" name="contentSource" value="custom">
-                                        <span style="color: #666; font-weight: 600;">✍️ Custom Content</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div style="text-align: left; margin-bottom: 30px;">
-                                <label style="display: block; font-weight: 600; color: #333; margin-bottom: 10px;">Reddit Post URL</label>
-                                <input type="url" placeholder="https://reddit.com/r/getmotivated/..." style="width: 100%; padding: 15px; border: 2px solid #e1e5f7; border-radius: 8px; font-size: 16px;">
-                                <small style="color: #666; margin-top: 5px; display: block;">Or select from trending posts above ↑</small>
-                            </div>
-
-                            <div style="text-align: left; margin-bottom: 30px;">
-                                <label style="display: block; font-weight: 600; color: #333; margin-bottom: 10px;">Target Platforms</label>
-                                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                                    <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9ff; border: 1px solid #667eea; border-radius: 8px; cursor: pointer;">
-                                        <input type="checkbox" checked>
-                                        <span style="color: #667eea; font-weight: 600;">📺 YouTube</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9ff; border: 1px solid #667eea; border-radius: 8px; cursor: pointer;">
-                                        <input type="checkbox" checked>
-                                        <span style="color: #667eea; font-weight: 600;">📸 Instagram</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9ff; border: 1px solid #667eea; border-radius: 8px; cursor: pointer;">
-                                        <input type="checkbox" checked>
-                                        <span style="color: #667eea; font-weight: 600;">🎵 TikTok</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9ff; border: 1px solid #667eea; border-radius: 8px; cursor: pointer;">
-                                        <input type="checkbox">
-                                        <span style="color: #667eea; font-weight: 600;">💼 LinkedIn</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <button class="btn btn--primary" onclick="createContent()" style="font-size: 18px; padding: 16px 32px;">🚀 Create Professional Content</button>
+                            <h3 style="margin-bottom: 30px;">Content Creation Tools</h3>
+                            <p style="margin-bottom: 30px;">Create professional videos with your voice and automated posting</p>
+                            <button class="btn btn--primary" id="startCreateBtn" style="font-size: 18px; padding: 16px 32px;">Start Creating Content</button>
                         </div>
                     </div>
                 </section>
 
                 <section id="library" class="section">
                     <div style="text-align: center; padding: 40px; color: #333;">
-                        <h2>📚 Content Library</h2>
+                        <h2>Content Library</h2>
                         <p style="color: #666; margin-bottom: 40px;">Your created content and performance metrics</p>
                         <div id="contentGrid">
                             <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-                                <h3>📋 Content Archive</h3>
+                                <h3>Content Archive</h3>
                                 <p style="color: #666; margin-bottom: 20px;">Your content library is empty</p>
-                                <p style="color: #666; margin-bottom: 30px;">Created content will appear here with:</p>
-                                <div style="text-align: left; max-width: 400px; margin: 0 auto 30px;">
-                                    <p>✅ Performance metrics</p>
-                                    <p>✅ Platform distribution</p>
-                                    <p>✅ Engagement analytics</p>
-                                    <p>✅ Content management tools</p>
-                                </div>
-                                <button class="btn btn--primary" onclick="showSection('create')">✍️ Create Your First Content</button>
+                                <p style="color: #666; margin-bottom: 30px;">Created content will appear here</p>
+                                <button class="btn btn--primary" id="libraryCreateBtn">Create Your First Content</button>
                             </div>
                         </div>
                     </div>
@@ -221,25 +169,12 @@
 
                 <section id="analytics" class="section">
                     <div style="text-align: center; padding: 40px; color: #333;">
-                        <h2>📈 Performance Analytics</h2>
+                        <h2>Performance Analytics</h2>
                         <p style="color: #666; margin-bottom: 40px;">Detailed insights into your content performance</p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-                                <h3>📊 Views by Platform</h3>
-                                <p style="color: #666;">Track performance across all platforms</p>
-                                <div style="margin: 20px 0; padding: 20px; background: #f8f9ff; border-radius: 10px;">
-                                    <p style="color: #333; font-weight: 600;">Coming Soon!</p>
-                                    <p style="color: #666; font-size: 14px;">Interactive charts will show your content performance</p>
-                                </div>
-                            </div>
-                            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-                                <h3>💝 Engagement Trends</h3>
-                                <p style="color: #666;">Monitor likes, shares, and comments</p>
-                                <div style="margin: 20px 0; padding: 20px; background: #f8f9ff; border-radius: 10px;">
-                                    <p style="color: #333; font-weight: 600;">Coming Soon!</p>
-                                    <p style="color: #666; font-size: 14px;">Real-time engagement metrics and trends</p>
-                                </div>
-                            </div>
+                        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                            <h3>Analytics Dashboard</h3>
+                            <p style="color: #666;">Performance charts and metrics will appear here</p>
+                            <p style="color: #667eea; font-weight: 600;">Coming Soon!</p>
                         </div>
                     </div>
                 </section>
@@ -250,300 +185,209 @@
             <p>Setup wizard hidden</p>
         </div>
 
-        <!-- Settings Modal -->
         <div class="settings-modal" id="settingsModal">
             <div class="settings-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
-                    <h2 style="margin: 0;">⚙️ Settings & Configuration</h2>
-                    <button class="btn btn--outline" onclick="closeSettings()">✕ Close</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0;">Settings</h2>
+                    <button class="btn btn--outline" id="closeSettingsBtn">Close</button>
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <h3 style="color: #333; margin-bottom: 20px;">🤖 n8n Server Configuration</h3>
-                    <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #333; margin-bottom: 20px;">n8n Server Configuration</h3>
+                    <div style="background: #f8f9ff; padding: 20px; border-radius: 10px;">
                         <p><strong>Server URL:</strong> https://n8n.pareshrai.com.np</p>
                         <p><strong>Webhook:</strong> https://n8n.pareshrai.com.np/webhook/mindset-content-creator</p>
-                        <p style="color: #28a745; font-weight: 600;">✅ Connected and Ready</p>
+                        <p style="color: #28a745; font-weight: 600;">Connected and Ready</p>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <h3 style="color: #333; margin-bottom: 20px;">🎤 Voice Cloning Setup</h3>
+                    <h3 style="color: #333; margin-bottom: 20px;">Voice Cloning Setup</h3>
                     <div style="background: #f8f9ff; padding: 20px; border-radius: 10px;">
-                        <p><strong>Service:</strong> FakeYou.com (Free)</p>
-                        <p><strong>Status:</strong> Ready for voice model configuration</p>
-                        <p style="color: #667eea;">💡 Upload your 30-second voice sample to FakeYou.com to get started</p>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 30px;">
-                    <h3 style="color: #333; margin-bottom: 20px;">📱 Social Media Platforms</h3>
-                    <div style="background: #f8f9ff; padding: 20px; border-radius: 10px;">
-                        <p><strong>Available Platforms:</strong> YouTube, Instagram, TikTok, LinkedIn, Facebook, Twitter</p>
-                        <p><strong>Status:</strong> Ready for connection via n8n automation</p>
-                        <p style="color: #667eea;">💡 Connect platforms through your n8n workflow</p>
+                        <p><strong>Service:</strong> FakeYou.com</p>
+                        <p><strong>Status:</strong> Ready for configuration</p>
                     </div>
                 </div>
 
                 <div style="text-align: center;">
-                    <button class="btn btn--primary" onclick="closeSettings()">💾 Settings Saved</button>
+                    <button class="btn btn--primary" id="saveSettingsBtn">Save Settings</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Basic Variables -->
     <script>
-        console.log("MindsetFlow - Enhanced Working Version");
+        console.log("MindsetFlow - Starting...");
+        var currentSection = "dashboard";
+    </script>
 
-        // Initialize when DOM loads
-        document.addEventListener("DOMContentLoaded", function() {
-            console.log("DOM loaded - initializing app");
-            initializeApp();
-        });
-
-        function initializeApp() {
-            console.log("Initializing MindsetFlow app");
-
-            // Show main app
-            var mainApp = document.getElementById("mainApp");
-            if (mainApp) {
-                mainApp.classList.remove("hidden");
-                console.log("✅ Main app shown");
-            } else {
-                console.error("❌ Main app element not found");
-            }
-
-            // Hide setup wizard
-            var setupWizard = document.getElementById("setupWizard");
-            if (setupWizard) {
-                setupWizard.classList.add("hidden");
-                console.log("✅ Setup wizard hidden");
-            }
-
-            // Setup all event listeners
-            setupEventListeners();
-
-            // Show welcome notification
-            showNotification("🎉 Welcome to MindsetFlow! Your content creation system is ready.", "success");
-
-            console.log("✅ MindsetFlow app initialized successfully");
-        }
-
-        function setupEventListeners() {
-            console.log("Setting up all event listeners");
-
-            // Navigation items
-            var navItems = document.querySelectorAll(".nav__item");
-            console.log("Found " + navItems.length + " navigation items");
-
-            for (var i = 0; i < navItems.length; i++) {
-                navItems[i].addEventListener("click", function() {
-                    var section = this.getAttribute("data-section");
-                    console.log("Navigation clicked: " + section);
-                    if (section) {
-                        showSection(section);
-                    }
-                });
-            }
-
-            // Create content button
-            var createBtn = document.getElementById("createContentBtn");
-            if (createBtn) {
-                createBtn.addEventListener("click", function() {
-                    console.log("Create content button clicked");
-                    showSection("create");
-                    showNotification("🎯 Ready to create professional content!", "info");
-                });
-                console.log("✅ Create content button listener added");
-            }
-
-            // Settings button
-            var settingsBtn = document.getElementById("settingsBtn");
-            if (settingsBtn) {
-                settingsBtn.addEventListener("click", function() {
-                    console.log("Settings button clicked");
-                    showSettings();
-                });
-                console.log("✅ Settings button listener added");
-            }
-
-            console.log("✅ All event listeners set up successfully");
-        }
-
+    <!-- Core Functions -->
+    <script>
         function showSection(sectionName) {
             console.log("Showing section: " + sectionName);
 
-            // Update navigation active state
-            var navItems = document.querySelectorAll(".nav__item");
-            for (var i = 0; i < navItems.length; i++) {
-                navItems[i].classList.remove("nav__item--active");
-            }
+            var sections = ["dashboard", "trending", "create", "library", "analytics"];
+            var navButtons = ["navDashboard", "navTrending", "navCreate", "navLibrary", "navAnalytics"];
 
-            var activeNav = document.querySelector("[data-section='" + sectionName + "']");
-            if (activeNav) {
-                activeNav.classList.add("nav__item--active");
-                console.log("✅ Navigation updated for: " + sectionName);
-            } else {
-                console.error("❌ Navigation item not found for: " + sectionName);
-            }
-
-            // Update section visibility
-            var sections = document.querySelectorAll(".section");
             for (var i = 0; i < sections.length; i++) {
-                sections[i].classList.remove("section--active");
-            }
+                var section = document.getElementById(sections[i]);
+                var navBtn = document.getElementById(navButtons[i]);
 
-            var activeSection = document.getElementById(sectionName);
-            if (activeSection) {
-                activeSection.classList.add("section--active");
-                console.log("✅ Section shown: " + sectionName);
-
-                // Show section-specific notification
-                var messages = {
-                    dashboard: "📊 Dashboard - Your content overview",
-                    trending: "🔥 Trending Posts - Find viral content ideas",
-                    create: "✍️ Create Content - Make professional videos",
-                    library: "📚 Content Library - Manage your content",
-                    analytics: "📈 Analytics - Track your performance"
-                };
-
-                if (messages[sectionName]) {
-                    showNotification(messages[sectionName], "info");
+                if (sections[i] === sectionName) {
+                    if (section) section.classList.add("section--active");
+                    if (navBtn) navBtn.classList.add("nav__item--active");
+                } else {
+                    if (section) section.classList.remove("section--active");
+                    if (navBtn) navBtn.classList.remove("nav__item--active");
                 }
-            } else {
-                console.error("❌ Section element not found: " + sectionName);
             }
+
+            currentSection = sectionName;
+            showMessage("Switched to " + sectionName + " section");
         }
 
         function showSettings() {
-            console.log("Opening settings modal");
+            console.log("Opening settings");
             var modal = document.getElementById("settingsModal");
             if (modal) {
                 modal.style.display = "flex";
-                showNotification("⚙️ Settings opened - Configure your MindsetFlow", "info");
-                console.log("✅ Settings modal opened");
-            } else {
-                console.error("❌ Settings modal not found");
+                showMessage("Settings opened");
             }
         }
 
         function closeSettings() {
-            console.log("Closing settings modal");
+            console.log("Closing settings");
             var modal = document.getElementById("settingsModal");
             if (modal) {
                 modal.style.display = "none";
-                showNotification("💾 Settings closed", "success");
-                console.log("✅ Settings modal closed");
+                showMessage("Settings closed");
             }
         }
 
-        function loadTrendingPosts() {
-            console.log("Loading trending posts");
-            showNotification("🔄 Loading trending posts from Reddit...", "info");
+        function showMessage(text) {
+            console.log("Message: " + text);
 
-            // Simulate loading
-            setTimeout(function() {
-                var container = document.getElementById("trendingPostsContainer");
-                if (container) {
-                    container.innerHTML = 
-                        "<div style='background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);'>" +
-                            "<h3 style='color: #28a745; margin-bottom: 20px;'>✅ Trending Posts Loaded!</h3>" +
-                            "<p style='margin-bottom: 15px;'>Found 12 high-engagement posts from:</p>" +
-                            "<div style='text-align: left; max-width: 500px; margin: 0 auto;'>" +
-                                "<p>🔥 r/getmotivated - 5 posts (avg 2.5K upvotes)</p>" +
-                                "<p>🔥 r/selfimprovement - 4 posts (avg 1.8K upvotes)</p>" +
-                                "<p>🔥 r/decidingtobebetter - 3 posts (avg 1.2K upvotes)</p>" +
-                            "</div>" +
-                            "<button class='btn btn--primary' onclick='showSection("create")' style='margin-top: 20px;'>🚀 Create Content from Trending Posts</button>" +
-                        "</div>";
-
-                    showNotification("✅ Found 12 trending posts ready for content creation!", "success");
-                }
-            }, 2000);
-        }
-
-        function createContent() {
-            console.log("Creating content");
-            showNotification("🚀 Starting content creation process...", "info");
-
-            // Simulate content creation process
-            setTimeout(function() {
-                showNotification("📝 Generating script with Perplexity Pro...", "info");
-
-                setTimeout(function() {
-                    showNotification("🎤 Creating voice narration...", "info");
-
-                    setTimeout(function() {
-                        showNotification("🎬 Producing professional video...", "info");
-
-                        setTimeout(function() {
-                            showNotification("📱 Publishing to selected platforms...", "info");
-
-                            setTimeout(function() {
-                                showNotification("🎉 Content created successfully! Check your platforms.", "success");
-
-                                // Update stats
-                                var totalContent = document.getElementById("totalContent");
-                                if (totalContent) {
-                                    totalContent.textContent = "1";
-                                }
-
-                                var totalPlatforms = document.getElementById("totalPlatforms");
-                                if (totalPlatforms) {
-                                    totalPlatforms.textContent = "3";
-                                }
-
-                                showSection("dashboard");
-                            }, 2000);
-                        }, 2000);
-                    }, 2000);
-                }, 2000);
-            }, 1000);
-        }
-
-        function showNotification(message, type) {
-            console.log("Notification (" + type + "): " + message);
+            var existing = document.querySelector(".notification");
+            if (existing) {
+                existing.remove();
+            }
 
             var notification = document.createElement("div");
             notification.className = "notification";
-            notification.textContent = message;
-
-            // Set color based on type
-            var colors = {
-                info: "#667eea",
-                success: "#28a745",
-                error: "#dc3545",
-                warning: "#ffc107"
-            };
-
-            notification.style.backgroundColor = colors[type] || colors.info;
+            notification.textContent = text;
             document.body.appendChild(notification);
 
-            // Animate in
             setTimeout(function() {
-                notification.style.transform = "translateX(0)";
-            }, 100);
-
-            // Remove after 4 seconds
-            setTimeout(function() {
-                notification.style.transform = "translateX(100%)";
-                setTimeout(function() {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
-            }, 4000);
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
         }
 
-        // Log that everything is ready
-        console.log("🎉 MindsetFlow Enhanced Version - All functions loaded and ready!");
-        console.log("Features available:");
-        console.log("- ✅ Working navigation");
-        console.log("- ✅ Settings modal");
-        console.log("- ✅ Content creation simulation");
-        console.log("- ✅ Trending posts loading");
-        console.log("- ✅ Notification system");
-        console.log("- ✅ Responsive interface");
+        function createContent() {
+            console.log("Starting content creation");
+            showMessage("Starting content creation process...");
+            showSection("create");
+        }
+
+        function loadTrending() {
+            console.log("Loading trending posts");
+            showMessage("Loading trending posts from Reddit...");
+
+            setTimeout(function() {
+                var container = document.getElementById("trendingPostsContainer");
+                if (container) {
+                    container.innerHTML = "<div style='background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);'><h3 style='color: #28a745;'>Trending Posts Loaded!</h3><p>Found 12 high-engagement posts ready for content creation</p><button class='btn btn--primary' onclick='createContent()'>Create Content from Posts</button></div>";
+                }
+                showMessage("Found 12 trending posts!");
+            }, 2000);
+        }
+    </script>
+
+    <!-- Event Listeners -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("DOM loaded - setting up event listeners");
+
+            var navDashboard = document.getElementById("navDashboard");
+            if (navDashboard) {
+                navDashboard.onclick = function() { showSection("dashboard"); };
+            }
+
+            var navTrending = document.getElementById("navTrending");
+            if (navTrending) {
+                navTrending.onclick = function() { showSection("trending"); };
+            }
+
+            var navCreate = document.getElementById("navCreate");
+            if (navCreate) {
+                navCreate.onclick = function() { showSection("create"); };
+            }
+
+            var navLibrary = document.getElementById("navLibrary");
+            if (navLibrary) {
+                navLibrary.onclick = function() { showSection("library"); };
+            }
+
+            var navAnalytics = document.getElementById("navAnalytics");
+            if (navAnalytics) {
+                navAnalytics.onclick = function() { showSection("analytics"); };
+            }
+
+            var createContentBtn = document.getElementById("createContentBtn");
+            if (createContentBtn) {
+                createContentBtn.onclick = function() { createContent(); };
+            }
+
+            var settingsBtn = document.getElementById("settingsBtn");
+            if (settingsBtn) {
+                settingsBtn.onclick = function() { showSettings(); };
+            }
+
+            var closeSettingsBtn = document.getElementById("closeSettingsBtn");
+            if (closeSettingsBtn) {
+                closeSettingsBtn.onclick = function() { closeSettings(); };
+            }
+
+            var saveSettingsBtn = document.getElementById("saveSettingsBtn");
+            if (saveSettingsBtn) {
+                saveSettingsBtn.onclick = function() { closeSettings(); };
+            }
+
+            var dashboardCreateBtn = document.getElementById("dashboardCreateBtn");
+            if (dashboardCreateBtn) {
+                dashboardCreateBtn.onclick = function() { createContent(); };
+            }
+
+            var dashboardAnalyticsBtn = document.getElementById("dashboardAnalyticsBtn");
+            if (dashboardAnalyticsBtn) {
+                dashboardAnalyticsBtn.onclick = function() { showSection("analytics"); };
+            }
+
+            var loadTrendingBtn = document.getElementById("loadTrendingBtn");
+            if (loadTrendingBtn) {
+                loadTrendingBtn.onclick = function() { loadTrending(); };
+            }
+
+            var startCreateBtn = document.getElementById("startCreateBtn");
+            if (startCreateBtn) {
+                startCreateBtn.onclick = function() { createContent(); };
+            }
+
+            var libraryCreateBtn = document.getElementById("libraryCreateBtn");
+            if (libraryCreateBtn) {
+                libraryCreateBtn.onclick = function() { createContent(); };
+            }
+
+            showMessage("MindsetFlow ready!");
+            console.log("All event listeners set up successfully");
+        });
+    </script>
+
+    <!-- Final Ready Message -->
+    <script>
+        console.log("MindsetFlow - All scripts loaded successfully!");
     </script>
 </body>
 </html>
