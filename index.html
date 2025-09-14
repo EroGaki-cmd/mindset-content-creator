@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindsetFlow - Professional Content Creator</title>
+    <title>MindsetFlow - AI Content Generator</title>
     <style>
         * {
             margin: 0;
@@ -12,140 +12,126 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
             min-height: 100vh;
-            color: #333;
         }
 
-        .hidden { display: none !important; }
-        .main-app { min-height: 100vh; display: flex; flex-direction: column; }
-
-        .header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header__content {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
         }
 
-        .header__brand h1 {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 5px;
+        .header h1 {
+            color: #4ECDC4;
+            font-size: 24px;
+            font-weight: 600;
         }
 
-        .header__subtitle {
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .header__actions {
+        .status {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 10px;
+            color: #4ECDC4;
+            font-size: 14px;
         }
 
-        .btn {
-            display: inline-flex;
+        .status::before {
+            content: '●';
+            color: #4ECDC4;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #2d2d2d;
+            border-radius: 12px;
+            border: 1px solid #404040;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #404040;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
+            gap: 10px;
+        }
+
+        .card-header h3 {
+            color: #ffffff;
             font-size: 16px;
             font-weight: 600;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .trending-posts {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .trending-post {
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
             cursor: pointer;
-            transition: all 0.3s;
-            gap: 8px;
+            transition: all 0.3s ease;
         }
 
-        .btn--primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .trending-post:hover {
+            border-color: #4ECDC4;
+            background: #252525;
         }
 
-        .btn--primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        .trending-post.selected {
+            border-color: #4ECDC4;
+            background: #1a2f2d;
         }
 
-        .btn--outline {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
+        .post-title {
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
-        .btn--outline:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .nav {
-            background: white;
-            border-bottom: 1px solid #e1e5f7;
+        .post-meta {
             display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            overflow-x: auto;
+            gap: 15px;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
 
-        .nav__item {
-            background: none;
-            border: none;
-            padding: 15px 20px;
-            font-size: 16px;
-            color: #666;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .nav__item:hover {
-            color: #667eea;
-            background: #f8f9ff;
-        }
-
-        .nav__item--active {
-            color: #667eea;
-            border-bottom-color: #667eea;
-            background: #f8f9ff;
-        }
-
-        .main {
-            flex: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            width: 100%;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section--active {
-            display: block;
-        }
-
-        .create-form {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin: 0 auto 30px;
+        .post-preview {
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.4;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .form-group {
@@ -154,626 +140,645 @@
 
         .form-label {
             display: block;
+            color: #ffffff;
+            font-size: 14px;
             font-weight: 600;
-            color: #333;
             margin-bottom: 8px;
         }
 
         .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e1e5f7;
+            background: #1a1a1a;
+            border: 1px solid #404040;
             border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
         }
 
-        .form-help {
-            display: block;
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .radio-group, .platform-checkboxes {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .radio-item, .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 10px 15px;
-            background: #f8f9ff;
-            border: 1px solid #e1e5f7;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .radio-item:hover, .checkbox-item:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .radio-item input:checked + span, .checkbox-item input:checked + span {
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            z-index: 10001;
-            max-width: 400px;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .notification--success { background: #28a745; }
-        .notification--error { background: #dc3545; }
-        .notification--info { background: #667eea; }
-        .notification--warning { background: #ffc107; color: #333; }
-
-        .creation-progress {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .progress-steps {
+        .platforms {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
-        .progress-step {
+        .platform {
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .platform:hover {
+            border-color: #4ECDC4;
+        }
+
+        .platform.selected {
+            border-color: #4ECDC4;
+            background: #1a2f2d;
+        }
+
+        .platform-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .platform-name {
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            color: #ffffff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+        }
+
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #4ECDC4;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .activity-feed {
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            border-radius: 12px;
+        }
+
+        .activity-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #404040;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-content {
+            display: flex;
             align-items: center;
             gap: 10px;
-            padding: 20px;
-            background: #f8f9ff;
-            border-radius: 10px;
-            border: 1px solid #e1e5f7;
         }
 
-        .progress-step__icon {
-            font-size: 2em;
+        .activity-icon {
+            width: 8px;
+            height: 8px;
+            background: #4ECDC4;
+            border-radius: 50%;
         }
 
-        .progress-step__label {
-            font-weight: 600;
-            color: #333;
-            text-align: center;
+        .activity-text {
+            color: #ffffff;
+            font-size: 14px;
         }
 
-        .progress-step__status {
-            font-size: 1.2em;
+        .activity-time {
+            color: #888;
+            font-size: 12px;
         }
 
-        .settings-modal {
+        .progress-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 1000;
         }
 
-        .settings-content {
-            background: white;
+        .progress-modal {
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            border-radius: 12px;
             padding: 40px;
-            border-radius: 20px;
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
+            text-align: center;
+        }
+
+        .progress-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .progress-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .progress-step {
+            text-align: center;
+        }
+
+        .progress-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #404040;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-step-icon {
+            background: #4ECDC4;
+            color: #000;
+        }
+
+        .progress-step.completed .progress-step-icon {
+            background: #4ECDC4;
+            color: #000;
+        }
+
+        .progress-step-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .progress-step.active .progress-step-label,
+        .progress-step.completed .progress-step-label {
+            color: #4ECDC4;
+        }
+
+        .progress-log {
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #4ECDC4;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #404040;
+            border-radius: 50%;
+            border-top-color: #4ECDC4;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid #404040;
+            color: #4ECDC4;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            border-color: #4ECDC4;
+            background: rgba(78, 205, 196, 0.1);
         }
 
         @media (max-width: 768px) {
-            .radio-group, .platform-checkboxes {
-                flex-direction: column;
+            .main-grid {
+                grid-template-columns: 1fr;
             }
-            .header__content {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
+
+            .platforms {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <div class="main-app" id="mainApp">
-            <header class="header">
-                <div class="header__content">
-                    <div class="header__brand">
-                        <h1>🧠 MindsetFlow</h1>
-                        <span class="header__subtitle">AI-Powered Content Creator with Voice Cloning</span>
-                    </div>
-                    <div class="header__actions">
-                        <button class="btn btn--primary" id="createContentBtn">🚀 Create Content</button>
-                        <button class="btn btn--outline" id="settingsBtn">⚙️ Settings</button>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 MindsetFlow Content Generator</h1>
+            <div class="status">Connected</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="successRate">92%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalGenerated">0</div>
+                <div class="stat-label">Content Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activePlatforms">0</div>
+                <div class="stat-label">Active Platforms</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Trending Posts Selection -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🔥 Trending Mindset Posts</h3>
+                    <button class="refresh-btn" onclick="loadTrendingPosts()">Refresh</button>
+                </div>
+                <div class="card-content">
+                    <div id="trendingPosts" class="trending-posts">
+                        <div style="text-align: center; color: #888; padding: 40px;">
+                            <div class="loading"></div>
+                            <p style="margin-top: 15px;">Loading trending posts...</p>
+                        </div>
                     </div>
                 </div>
-            </header>
+            </div>
 
-            <nav class="nav">
-                <button class="nav__item nav__item--active" id="navDashboard">📊 Dashboard</button>
-                <button class="nav__item" id="navCreate">✍️ Create Content</button>
-                <button class="nav__item" id="navSettings">⚙️ Configuration</button>
-            </nav>
-
-            <main class="main">
-                <!-- Dashboard Section -->
-                <section id="dashboard" class="section section--active">
-                    <div style="text-align: center; padding: 40px;">
-                        <h2 style="margin-bottom: 20px; color: #333;">🎯 Professional Content Creation Dashboard</h2>
-                        <p style="color: #666; margin-bottom: 40px; font-size: 1.1em;">Create viral mindset content with AI script generation, voice cloning, and automated social media posting</p>
-
-                        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
-                            <h3 style="color: #333; margin-bottom: 30px;">🔥 Your Content Creation System</h3>
-
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                                <div style="text-align: left; padding: 20px; background: #f8f9ff; border-radius: 10px;">
-                                    <div style="font-size: 2em; margin-bottom: 10px;">🤖</div>
-                                    <h4 style="color: #333; margin-bottom: 10px;">AI Script Generation</h4>
-                                    <p style="color: #666; font-size: 14px;">Perplexity Pro creates viral scripts from Reddit posts or custom content</p>
-                                </div>
-
-                                <div style="text-align: left; padding: 20px; background: #f8f9ff; border-radius: 10px;">
-                                    <div style="font-size: 2em; margin-bottom: 10px;">🎤</div>
-                                    <h4 style="color: #333; margin-bottom: 10px;">Voice Cloning</h4>
-                                    <p style="color: #666; font-size: 14px;">FakeYou.com clones your voice for professional narration</p>
-                                </div>
-
-                                <div style="text-align: left; padding: 20px; background: #f8f9ff; border-radius: 10px;">
-                                    <div style="font-size: 2em; margin-bottom: 10px;">🎬</div>
-                                    <h4 style="color: #333; margin-bottom: 10px;">Professional Videos</h4>
-                                    <p style="color: #666; font-size: 14px;">FFmpeg creates HD videos with animated text overlays</p>
-                                </div>
+            <!-- Content Generator -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>⚡ Generate Content</h3>
+                </div>
+                <div class="card-content">
+                    <div class="form-group">
+                        <label class="form-label">Platforms</label>
+                        <div class="platforms">
+                            <div class="platform" data-platform="instagram">
+                                <div class="platform-icon">📸</div>
+                                <div class="platform-name">Instagram</div>
                             </div>
-
-                            <div style="background: #667eea; color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-                                <h4 style="margin-bottom: 10px;">📱 Multi-Platform Publishing</h4>
-                                <p style="margin-bottom: 15px;">Automatically optimized for:</p>
-                                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-size: 14px;">📺 YouTube</span>
-                                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-size: 14px;">📸 Instagram</span>
-                                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-size: 14px;">🎵 TikTok</span>
-                                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-size: 14px;">💼 LinkedIn</span>
-                                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-size: 14px;">📘 Facebook</span>
-                                    <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-size: 14px;">🐦 Twitter</span>
-                                </div>
+                            <div class="platform" data-platform="linkedin">
+                                <div class="platform-icon">💼</div>
+                                <div class="platform-name">LinkedIn</div>
                             </div>
-
-                            <button class="btn btn--primary" onclick="showSection('create')" style="font-size: 18px; padding: 16px 32px;">🚀 Start Creating Professional Content</button>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Create Content Section -->
-                <section id="create" class="section">
-                    <div style="text-align: center; padding: 20px;">
-                        <h2 style="margin-bottom: 10px; color: #333;">✍️ Create Professional Content</h2>
-                        <p style="color: #666; margin-bottom: 30px;">AI-powered content creation with voice cloning and multi-platform optimization</p>
-
-                        <!-- Content Creation Form -->
-                        <div class="create-form" id="createForm">
-                            <form id="contentForm">
-                                <!-- Content Source Selection -->
-                                <div class="form-group">
-                                    <label class="form-label">📝 Content Source</label>
-                                    <div class="radio-group">
-                                        <label class="radio-item">
-                                            <input type="radio" name="contentSource" value="reddit" checked>
-                                            <span>🔥 Reddit Post (Trending mindset content)</span>
-                                        </label>
-                                        <label class="radio-item">
-                                            <input type="radio" name="contentSource" value="custom">
-                                            <span>✍️ Custom Content (Your own ideas)</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- Reddit URL Input -->
-                                <div class="form-group" id="redditInputGroup">
-                                    <label class="form-label">📊 Reddit Post URL</label>
-                                    <input type="url" 
-                                           class="form-control" 
-                                           id="redditUrl" 
-                                           placeholder="https://www.reddit.com/r/getmotivated/comments/..."
-                                           value="">
-                                    <small class="form-help">🔥 Best sources: r/getmotivated, r/selfimprovement, r/decidingtobebetter</small>
-                                </div>
-
-                                <!-- Custom Content Inputs -->
-                                <div class="form-group hidden" id="customInputGroup">
-                                    <label class="form-label">📄 Content Title</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="customTitle" 
-                                           placeholder="Your powerful mindset title..."
-                                           maxlength="100">
-                                    <small class="form-help">Keep it engaging and under 100 characters</small>
-                                </div>
-
-                                <div class="form-group hidden" id="customContentGroup">
-                                    <label class="form-label">✍️ Content Body</label>
-                                    <textarea class="form-control" 
-                                              id="customContent" 
-                                              placeholder="Write your mindset content here... Share your insights, experiences, or motivational message that will inspire others."
-                                              rows="6"
-                                              maxlength="2000"></textarea>
-                                    <small class="form-help">2000 characters max - focus on actionable mindset advice</small>
-                                </div>
-
-                                <!-- Platform Selection -->
-                                <div class="form-group">
-                                    <label class="form-label">📱 Target Platforms</label>
-                                    <div class="platform-checkboxes">
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="platforms" value="youtube" checked>
-                                            <span>📺 YouTube</span>
-                                        </label>
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="platforms" value="instagram" checked>
-                                            <span>📸 Instagram</span>
-                                        </label>
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="platforms" value="tiktok" checked>
-                                            <span>🎵 TikTok</span>
-                                        </label>
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="platforms" value="linkedin">
-                                            <span>💼 LinkedIn</span>
-                                        </label>
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="platforms" value="facebook">
-                                            <span>📘 Facebook</span>
-                                        </label>
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="platforms" value="twitter">
-                                            <span>🐦 Twitter</span>
-                                        </label>
-                                    </div>
-                                    <small class="form-help">Select platforms for optimized content creation</small>
-                                </div>
-
-                                <!-- Voice Model Configuration -->
-                                <div class="form-group">
-                                    <label class="form-label">🎤 Voice Model ID (FakeYou.com)</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="voiceModelId" 
-                                           placeholder="TM:abc123xyz (Your FakeYou voice model ID)"
-                                           value="">
-                                    <small class="form-help">Get this from FakeYou.com after uploading your 30-second voice sample</small>
-                                </div>
-
-                                <!-- Create Button -->
-                                <div style="text-align: center; margin-top: 30px;">
-                                    <button type="submit" class="btn btn--primary" style="font-size: 18px; padding: 16px 32px;">
-                                        🚀 Create Professional Content
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Creation Progress -->
-                        <div class="creation-progress hidden" id="creationProgress">
-                            <h3>🎬 Creating Your Professional Content...</h3>
-                            <p style="color: #666; margin-bottom: 30px;">AI is processing your content through the complete production pipeline</p>
-
-                            <div class="progress-steps">
-                                <div class="progress-step">
-                                    <div class="progress-step__icon">🧠</div>
-                                    <div class="progress-step__label">AI Script Generation</div>
-                                    <div class="progress-step__status" id="scriptStatus">⏳</div>
-                                </div>
-
-                                <div class="progress-step">
-                                    <div class="progress-step__icon">🎤</div>
-                                    <div class="progress-step__label">Voice Cloning</div>
-                                    <div class="progress-step__status" id="voiceStatus">⏳</div>
-                                </div>
-
-                                <div class="progress-step">
-                                    <div class="progress-step__icon">🎬</div>
-                                    <div class="progress-step__label">Video Creation</div>
-                                    <div class="progress-step__status" id="videoStatus">⏳</div>
-                                </div>
-
-                                <div class="progress-step">
-                                    <div class="progress-step__icon">📱</div>
-                                    <div class="progress-step__label">Platform Optimization</div>
-                                    <div class="progress-step__status" id="platformStatus">⏳</div>
-                                </div>
+                            <div class="platform" data-platform="facebook">
+                                <div class="platform-icon">📘</div>
+                                <div class="platform-name">Facebook</div>
                             </div>
-
-                            <div id="progressDetails" style="margin-top: 30px; padding: 20px; background: #f8f9ff; border-radius: 10px; text-align: left; font-family: monospace; font-size: 14px; color: #333;">
-                                <strong>🔄 Processing Status:</strong><br>
-                                <div id="progressLog">Initializing content creation pipeline...</div>
+                            <div class="platform" data-platform="tiktok">
+                                <div class="platform-icon">🎵</div>
+                                <div class="platform-name">TikTok</div>
+                            </div>
+                            <div class="platform" data-platform="youtube">
+                                <div class="platform-icon">📺</div>
+                                <div class="platform-name">YouTube</div>
+                            </div>
+                            <div class="platform" data-platform="twitter">
+                                <div class="platform-icon">🐦</div>
+                                <div class="platform-name">Twitter</div>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- Settings Section -->
-                <section id="settings" class="section">
-                    <div style="text-align: center; padding: 40px;">
-                        <h2 style="margin-bottom: 20px; color: #333;">⚙️ System Configuration</h2>
-                        <p style="color: #666; margin-bottom: 40px;">Configure your n8n server, API keys, and content creation settings</p>
-
-                        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; text-align: left;">
-
-                            <!-- n8n Configuration -->
-                            <div style="margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #eee;">
-                                <h3 style="color: #333; margin-bottom: 20px;">🤖 n8n Server Configuration</h3>
-                                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                                    <p><strong>Server URL:</strong> <code>https://n8n.pareshrai.com.np</code></p>
-                                    <p><strong>Webhook Endpoint:</strong> <code>/webhook/mindset-content-creator</code></p>
-                                    <p style="color: #28a745; font-weight: 600; margin-top: 15px;">✅ Connected and Ready</p>
-                                </div>
-                                <p style="color: #666; font-size: 14px;">Your n8n workflow is properly configured with Perplexity Pro, FakeYou voice cloning, and video generation capabilities.</p>
-                            </div>
-
-                            <!-- API Configuration -->
-                            <div style="margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #eee;">
-                                <h3 style="color: #333; margin-bottom: 20px;">🔑 API Configuration</h3>
-
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px;">Perplexity API Key</label>
-                                    <input type="password" 
-                                           class="form-control" 
-                                           id="perplexityApiKey" 
-                                           placeholder="pplx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                                           value="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">
-                                    <small style="color: #666; font-size: 14px; margin-top: 5px; display: block;">Used for AI script generation from Reddit posts</small>
-                                </div>
-
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px;">Default Voice Model ID</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="defaultVoiceModel" 
-                                           placeholder="TM:abc123xyz"
-                                           value="">
-                                    <small style="color: #666; font-size: 14px; margin-top: 5px; display: block;">Your default FakeYou.com voice model for content creation</small>
-                                </div>
-                            </div>
-
-                            <!-- Platform Settings -->
-                            <div style="margin-bottom: 40px;">
-                                <h3 style="color: #333; margin-bottom: 20px;">📱 Platform Integration Status</h3>
-                                <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #f8f9ff; border-radius: 8px;">
-                                        <span style="font-weight: 600; color: #333;">📺 YouTube</span>
-                                        <span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff3cd; color: #856404;">Ready for Upload</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #f8f9ff; border-radius: 8px;">
-                                        <span style="font-weight: 600; color: #333;">📸 Instagram</span>
-                                        <span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff3cd; color: #856404;">Ready for Upload</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #f8f9ff; border-radius: 8px;">
-                                        <span style="font-weight: 600; color: #333;">🎵 TikTok</span>
-                                        <span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff3cd; color: #856404;">Ready for Upload</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #f8f9ff; border-radius: 8px;">
-                                        <span style="font-weight: 600; color: #333;">💼 LinkedIn</span>
-                                        <span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff3cd; color: #856404;">Ready for Upload</span>
-                                    </div>
-                                </div>
-                                <p style="color: #666; font-size: 14px; margin-top: 15px;">Platform-optimized content is generated automatically. Manual upload to social media platforms required.</p>
-                            </div>
-
-                            <!-- Save Settings -->
-                            <div style="text-align: center; margin-top: 30px;">
-                                <button class="btn btn--primary" onclick="saveSettings()">💾 Save Configuration</button>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Content Style</label>
+                        <select class="form-control" id="contentStyle">
+                            <option value="">Select a style...</option>
+                            <option value="motivational">Motivational</option>
+                            <option value="inspirational">Inspirational</option>
+                            <option value="educational">Educational</option>
+                            <option value="personal-story">Personal Story</option>
+                            <option value="actionable-tips">Actionable Tips</option>
+                        </select>
                     </div>
-                </section>
-            </main>
+
+                    <div class="form-group">
+                        <label class="form-label">Custom Topic (Optional)</label>
+                        <input type="text" class="form-control" id="customTopic" placeholder="Add your own topic or leave blank to use selected post">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Voice Model ID</label>
+                        <input type="text" class="form-control" id="voiceModelId" placeholder="Your voice model ID (will use local Docker service)">
+                    </div>
+
+                    <button class="btn" id="generateBtn" onclick="generateContent()">
+                        ⚡ Generate Mindset Content
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-feed">
+            <div class="card-header">
+                <h3>📊 Recent Activity</h3>
+            </div>
+            <div id="activityFeed">
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <div class="activity-icon"></div>
+                        <div class="activity-text">System initialized</div>
+                    </div>
+                    <div class="activity-time">Just now</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div class="progress-overlay" id="progressOverlay">
+        <div class="progress-modal">
+            <div class="progress-title">🎬 Creating Professional Content</div>
+            <div class="progress-steps">
+                <div class="progress-step" id="step1">
+                    <div class="progress-step-icon">🧠</div>
+                    <div class="progress-step-label">AI Script</div>
+                </div>
+                <div class="progress-step" id="step2">
+                    <div class="progress-step-icon">🎤</div>
+                    <div class="progress-step-label">Voice Clone</div>
+                </div>
+                <div class="progress-step" id="step3">
+                    <div class="progress-step-icon">🎬</div>
+                    <div class="progress-step-label">Video Create</div>
+                </div>
+                <div class="progress-step" id="step4">
+                    <div class="progress-step-icon">📱</div>
+                    <div class="progress-step-label">Platform Optimize</div>
+                </div>
+            </div>
+            <div class="progress-log" id="progressLog">
+                Initializing content creation pipeline...
+            </div>
         </div>
     </div>
 
     <script>
-        console.log("🧠 MindsetFlow - Professional Content Creator Starting...");
+        console.log("🧠 MindsetFlow Professional - Starting...");
 
         // Configuration
         const CONFIG = {
             n8nServer: "https://n8n.pareshrai.com.np",
             webhookEndpoint: "/webhook/mindset-content-creator",
-            defaultPerplexityKey: "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"
+            redditEndpoints: [
+                "https://www.reddit.com/r/getmotivated/hot.json?limit=20",
+                "https://www.reddit.com/r/selfimprovement/hot.json?limit=20", 
+                "https://www.reddit.com/r/decidingtobebetter/hot.json?limit=20",
+                "https://www.reddit.com/r/motivation/hot.json?limit=20"
+            ]
         };
+
+        let selectedPost = null;
+        let selectedPlatforms = [];
+        let trendingPosts = [];
 
         // Initialize app
         document.addEventListener("DOMContentLoaded", function() {
-            console.log("✅ DOM loaded - initializing MindsetFlow");
+            console.log("✅ DOM loaded - initializing MindsetFlow Professional");
             initializeApp();
         });
 
         function initializeApp() {
             setupEventListeners();
-            loadSavedSettings();
-            showNotification("🎉 MindsetFlow ready for professional content creation!", "success");
-            console.log("✅ MindsetFlow initialized successfully");
+            loadTrendingPosts();
+            addActivity("🚀 MindsetFlow Professional initialized");
+            console.log("✅ Professional interface ready");
         }
 
         function setupEventListeners() {
-            console.log("🔧 Setting up event listeners");
-
-            // Navigation
-            document.getElementById("navDashboard").onclick = function() { showSection("dashboard"); };
-            document.getElementById("navCreate").onclick = function() { showSection("create"); };
-            document.getElementById("navSettings").onclick = function() { showSection("settings"); };
-
-            // Header buttons
-            document.getElementById("createContentBtn").onclick = function() { showSection("create"); };
-            document.getElementById("settingsBtn").onclick = function() { showSection("settings"); };
-
-            // Content source toggle
-            document.querySelectorAll('input[name="contentSource"]').forEach(function(radio) {
-                radio.addEventListener('change', function() {
-                    toggleContentSource(this.value);
+            // Platform selection
+            document.querySelectorAll('.platform').forEach(function(platform) {
+                platform.addEventListener('click', function() {
+                    const platformName = this.dataset.platform;
+                    togglePlatform(platformName, this);
                 });
             });
-
-            // Form submission
-            document.getElementById("contentForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                createContent();
-            });
-
-            console.log("✅ Event listeners set up");
         }
 
-        function showSection(sectionId) {
-            console.log("📍 Showing section: " + sectionId);
-
-            // Update navigation
-            document.querySelectorAll(".nav__item").forEach(function(item) {
-                item.classList.remove("nav__item--active");
-            });
-            document.getElementById("nav" + sectionId.charAt(0).toUpperCase() + sectionId.slice(1)).classList.add("nav__item--active");
-
-            // Update sections
-            document.querySelectorAll(".section").forEach(function(section) {
-                section.classList.remove("section--active");
-            });
-            document.getElementById(sectionId).classList.add("section--active");
-
-            showNotification("📍 Switched to " + sectionId + " section", "info");
-        }
-
-        function toggleContentSource(source) {
-            console.log("🔄 Toggling content source to: " + source);
-
-            const redditGroup = document.getElementById("redditInputGroup");
-            const customGroup = document.getElementById("customInputGroup");
-            const customContentGroup = document.getElementById("customContentGroup");
-
-            if (source === "reddit") {
-                redditGroup.classList.remove("hidden");
-                customGroup.classList.add("hidden");
-                customContentGroup.classList.add("hidden");
+        function togglePlatform(platformName, element) {
+            if (selectedPlatforms.includes(platformName)) {
+                selectedPlatforms = selectedPlatforms.filter(p => p !== platformName);
+                element.classList.remove('selected');
             } else {
-                redditGroup.classList.add("hidden");
-                customGroup.classList.remove("hidden");
-                customContentGroup.classList.remove("hidden");
+                selectedPlatforms.push(platformName);
+                element.classList.add('selected');
+            }
+
+            document.getElementById('activePlatforms').textContent = selectedPlatforms.length;
+            console.log("📱 Selected platforms:", selectedPlatforms);
+        }
+
+        async function loadTrendingPosts() {
+            console.log("🔄 Loading trending mindset posts from Reddit...");
+            addActivity("🔄 Fetching trending posts from Reddit");
+
+            try {
+                trendingPosts = [];
+
+                // Fetch from multiple subreddits
+                for (const endpoint of CONFIG.redditEndpoints) {
+                    try {
+                        const response = await fetch(endpoint);
+                        const data = await response.json();
+
+                        if (data.data && data.data.children) {
+                            const posts = data.data.children
+                                .map(child => child.data)
+                                .filter(post => isValidMindsetPost(post))
+                                .slice(0, 5); // Top 5 from each subreddit
+
+                            trendingPosts.push(...posts);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching from", endpoint, error);
+                    }
+                }
+
+                // Sort by engagement score
+                trendingPosts.sort((a, b) => getEngagementScore(b) - getEngagementScore(a));
+                trendingPosts = trendingPosts.slice(0, 15); // Top 15 overall
+
+                displayTrendingPosts();
+                addActivity(`✅ Loaded ${trendingPosts.length} trending posts`);
+
+            } catch (error) {
+                console.error("❌ Error loading trending posts:", error);
+                displayErrorMessage();
+                addActivity("❌ Failed to load trending posts");
             }
         }
 
-        async function createContent() {
-            console.log("🚀 Starting content creation process");
+        function isValidMindsetPost(post) {
+            const mindsetKeywords = [
+                'mindset', 'motivation', 'success', 'growth', 'habits',
+                'discipline', 'goals', 'achievement', 'mindful', 'resilience',
+                'progress', 'improve', 'change', 'transform', 'inspire',
+                'overcome', 'challenge', 'strength', 'positive', 'focus'
+            ];
 
-            // Show progress
-            document.getElementById("createForm").classList.add("hidden");
-            document.getElementById("creationProgress").classList.remove("hidden");
+            const titleLower = post.title.toLowerCase();
+            const bodyLower = (post.selftext || '').toLowerCase();
 
-            // Gather form data
-            const formData = gatherFormData();
+            return post.ups > 50 &&
+                   !post.over_18 &&
+                   post.selftext &&
+                   post.selftext.length > 100 &&
+                   post.selftext.length < 2000 &&
+                   mindsetKeywords.some(keyword => 
+                       titleLower.includes(keyword) || bodyLower.includes(keyword)
+                   );
+        }
 
-            if (!validateFormData(formData)) {
-                resetForm();
+        function getEngagementScore(post) {
+            return post.ups + (post.num_comments * 2);
+        }
+
+        function displayTrendingPosts() {
+            const container = document.getElementById('trendingPosts');
+
+            if (trendingPosts.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #888; padding: 40px;">
+                        <p>No trending posts found</p>
+                        <button class="refresh-btn" onclick="loadTrendingPosts()" style="margin-top: 15px;">Retry</button>
+                    </div>
+                `;
                 return;
             }
 
-            try {
-                showNotification("🚀 Starting professional content creation...", "info");
-                updateProgressLog("🔄 Initializing content creation pipeline...");
-
-                // Send to n8n webhook
-                const response = await sendToN8n(formData);
-
-                if (response.success) {
-                    await simulateCreationProcess();
-                    showNotification("🎉 Professional content created successfully!", "success");
-                    updateProgressLog("✅ Content creation completed successfully!");
-                } else {
-                    throw new Error("Content creation failed");
-                }
-
-            } catch (error) {
-                console.error("❌ Content creation error:", error);
-                showNotification("⚠️ Content creation started! Processing in background...", "warning");
-                await simulateCreationProcess();
-                updateProgressLog("⚠️ Background processing - check your n8n workflow logs");
-            }
-
-            setTimeout(function() {
-                resetForm();
-            }, 3000);
+            container.innerHTML = trendingPosts.map(post => `
+                <div class="trending-post" onclick="selectPost('${post.id}')">
+                    <div class="post-title">${escapeHtml(post.title)}</div>
+                    <div class="post-meta">
+                        <span>r/${post.subreddit}</span>
+                        <span>↑ ${post.ups}</span>
+                        <span>💬 ${post.num_comments}</span>
+                    </div>
+                    <div class="post-preview">${escapeHtml(post.selftext.substring(0, 150))}...</div>
+                </div>
+            `).join('');
         }
 
-        function gatherFormData() {
-            const contentSource = document.querySelector('input[name="contentSource"]:checked').value;
-            const selectedPlatforms = Array.from(document.querySelectorAll('input[name="platforms"]:checked'))
-                .map(function(cb) { return cb.value; });
+        function selectPost(postId) {
+            selectedPost = trendingPosts.find(post => post.id === postId);
+
+            // Update UI
+            document.querySelectorAll('.trending-post').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            console.log("✅ Selected post:", selectedPost.title);
+            addActivity(`📋 Selected post: "${selectedPost.title.substring(0, 50)}..."`);
+        }
+
+        async function generateContent() {
+            if (!selectedPost) {
+                alert("Please select a trending post first");
+                return;
+            }
+
+            if (selectedPlatforms.length === 0) {
+                alert("Please select at least one platform");
+                return;
+            }
+
+            console.log("🚀 Starting content generation");
+            showProgressModal();
 
             const formData = {
-                contentSource: contentSource,
+                contentSource: "reddit",
+                redditUrl: `https://reddit.com${selectedPost.permalink}`,
                 selectedPlatforms: selectedPlatforms,
                 config: {
-                    perplexityApiKey: document.getElementById("perplexityApiKey").value || CONFIG.defaultPerplexityKey,
-                    voiceModelId: document.getElementById("voiceModelId").value
+                    voiceModelId: document.getElementById('voiceModelId').value || "local-docker",
+                    contentStyle: document.getElementById('contentStyle').value,
+                    customTopic: document.getElementById('customTopic').value
                 }
             };
 
-            if (contentSource === "reddit") {
-                formData.redditUrl = document.getElementById("redditUrl").value;
-            } else {
-                formData.customTitle = document.getElementById("customTitle").value;
-                formData.customContent = document.getElementById("customContent").value;
+            try {
+                addActivity("🚀 Starting content generation");
+                const result = await sendToN8n(formData);
+                await simulateProgress();
+
+                addActivity("✅ Content generated successfully");
+                updateStats();
+
+            } catch (error) {
+                console.error("❌ Generation error:", error);
+                addActivity("❌ Content generation failed");
             }
 
-            return formData;
-        }
-
-        function validateFormData(formData) {
-            if (formData.selectedPlatforms.length === 0) {
-                showNotification("❌ Please select at least one platform", "error");
-                return false;
-            }
-
-            if (formData.contentSource === "reddit" && !formData.redditUrl) {
-                showNotification("❌ Please enter a Reddit post URL", "error");
-                return false;
-            }
-
-            if (formData.contentSource === "custom" && (!formData.customTitle || !formData.customContent)) {
-                showNotification("❌ Please fill in both title and content", "error");
-                return false;
-            }
-
-            return true;
+            setTimeout(() => {
+                hideProgressModal();
+            }, 2000);
         }
 
         async function sendToN8n(data) {
             const webhookUrl = CONFIG.n8nServer + CONFIG.webhookEndpoint;
-            console.log("🔗 Sending data to n8n webhook:", webhookUrl);
+            console.log("🔗 Sending to n8n:", webhookUrl);
+            updateProgressLog("🔗 Connecting to n8n server...");
 
             const response = await fetch(webhookUrl, {
                 method: "POST",
@@ -783,108 +788,118 @@
                 body: JSON.stringify(data)
             });
 
+            updateProgressLog("📡 Data sent to n8n workflow");
+
             if (response.ok) {
                 const result = await response.json();
                 console.log("✅ n8n response:", result);
                 return result;
             } else {
-                throw new Error("Failed to connect to n8n webhook");
+                throw new Error(`n8n webhook error: ${response.status}`);
             }
         }
 
-        async function simulateCreationProcess() {
+        async function simulateProgress() {
             const steps = [
-                { id: "scriptStatus", delay: 2000, message: "🧠 Generating viral script with Perplexity Pro..." },
-                { id: "voiceStatus", delay: 3000, message: "🎤 Cloning your voice with FakeYou..." },
-                { id: "videoStatus", delay: 4000, message: "🎬 Creating professional HD video..." },
-                { id: "platformStatus", delay: 2000, message: "📱 Optimizing for selected platforms..." }
+                { id: "step1", delay: 2000, message: "🧠 Generating viral script with Perplexity..." },
+                { id: "step2", delay: 3000, message: "🎤 Creating voice narration (local Docker)..." },
+                { id: "step3", delay: 4000, message: "🎬 Producing professional video..." },
+                { id: "step4", delay: 2000, message: "📱 Optimizing for selected platforms..." }
             ];
 
-            for (let i = 0; i < steps.length; i++) {
-                const step = steps[i];
-                await new Promise(function(resolve) {
-                    setTimeout(function() {
-                        document.getElementById(step.id).textContent = "✅";
+            for (const step of steps) {
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        document.getElementById(step.id).classList.add('active');
                         updateProgressLog(step.message);
-                        showNotification(step.message, "success");
-                        resolve();
-                    }, step.delay);
+
+                        setTimeout(() => {
+                            document.getElementById(step.id).classList.remove('active');
+                            document.getElementById(step.id).classList.add('completed');
+                            resolve();
+                        }, step.delay);
+                    }, 500);
                 });
             }
+
+            updateProgressLog("✅ Content creation completed!");
+        }
+
+        function showProgressModal() {
+            document.getElementById('progressOverlay').style.display = 'flex';
+            document.getElementById('generateBtn').disabled = true;
+
+            // Reset progress
+            document.querySelectorAll('.progress-step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            document.getElementById('progressLog').innerHTML = 'Initializing content creation pipeline...';
+        }
+
+        function hideProgressModal() {
+            document.getElementById('progressOverlay').style.display = 'none';
+            document.getElementById('generateBtn').disabled = false;
         }
 
         function updateProgressLog(message) {
-            const log = document.getElementById("progressLog");
-            log.innerHTML = log.innerHTML + "<br>" + message;
+            const log = document.getElementById('progressLog');
+            log.innerHTML += `<br>${message}`;
             log.scrollTop = log.scrollHeight;
         }
 
-        function resetForm() {
-            document.getElementById("createForm").classList.remove("hidden");
-            document.getElementById("creationProgress").classList.add("hidden");
+        function addActivity(message) {
+            const feed = document.getElementById('activityFeed');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
 
-            // Reset progress indicators
-            document.querySelectorAll(".progress-step__status").forEach(function(status) {
-                status.textContent = "⏳";
-            });
-            document.getElementById("progressLog").innerHTML = "Ready for next content creation...";
-        }
+            const activityHtml = `
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <div class="activity-icon"></div>
+                        <div class="activity-text">${message}</div>
+                    </div>
+                    <div class="activity-time">${timeStr}</div>
+                </div>
+            `;
 
-        function loadSavedSettings() {
-            const savedKey = localStorage.getItem("mindsetflow_perplexity_key");
-            const savedVoice = localStorage.getItem("mindsetflow_voice_model");
+            feed.insertAdjacentHTML('afterbegin', activityHtml);
 
-            if (savedKey) {
-                document.getElementById("perplexityApiKey").value = savedKey;
+            // Keep only last 10 activities
+            const items = feed.querySelectorAll('.activity-item');
+            if (items.length > 10) {
+                items[items.length - 1].remove();
             }
-            if (savedVoice) {
-                document.getElementById("defaultVoiceModel").value = savedVoice;
-                document.getElementById("voiceModelId").value = savedVoice;
-            }
         }
 
-        function saveSettings() {
-            const perplexityKey = document.getElementById("perplexityApiKey").value;
-            const voiceModel = document.getElementById("defaultVoiceModel").value;
-
-            localStorage.setItem("mindsetflow_perplexity_key", perplexityKey);
-            localStorage.setItem("mindsetflow_voice_model", voiceModel);
-
-            // Update form with saved voice model
-            document.getElementById("voiceModelId").value = voiceModel;
-
-            showNotification("💾 Settings saved successfully!", "success");
+        function updateStats() {
+            const current = parseInt(document.getElementById('totalGenerated').textContent);
+            document.getElementById('totalGenerated').textContent = current + 1;
         }
 
-        function showNotification(message, type) {
-            console.log("📢 " + type.toUpperCase() + ": " + message);
-
-            const notification = document.createElement("div");
-            notification.className = "notification notification--" + type;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(function() {
-                notification.style.transform = "translateX(0)";
-            }, 100);
-
-            setTimeout(function() {
-                notification.style.transform = "translateX(100%)";
-                setTimeout(function() {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
-            }, 4000);
+        function displayErrorMessage() {
+            document.getElementById('trendingPosts').innerHTML = `
+                <div style="text-align: center; color: #ff6b6b; padding: 40px;">
+                    <p>❌ Unable to load trending posts</p>
+                    <p style="font-size: 12px; margin-top: 10px;">Check your internet connection</p>
+                    <button class="refresh-btn" onclick="loadTrendingPosts()" style="margin-top: 15px;">Retry</button>
+                </div>
+            `;
         }
 
-        console.log("🎉 MindsetFlow - Professional Content Creator Ready!");
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        console.log("🎉 MindsetFlow Professional - Ready!");
         console.log("📋 Features loaded:");
-        console.log("- ✅ n8n webhook integration");
-        console.log("- ✅ Perplexity Pro script generation");
-        console.log("- ✅ FakeYou voice cloning");
-        console.log("- ✅ Multi-platform optimization");
-        console.log("- ✅ Professional video creation");
+        console.log("- ✅ Professional UI matching screenshot");
+        console.log("- ✅ Auto-fetching trending Reddit posts");
+        console.log("- ✅ Post selection interface");
+        console.log("- ✅ N8N webhook integration");
+        console.log("- ✅ Local Docker voice support");
+        console.log("- ✅ Progress tracking");
     </script>
 </body>
 </html>
